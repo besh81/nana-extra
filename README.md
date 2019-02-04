@@ -10,4 +10,4 @@ A collection of [Nana C++ Library](https://github.com/cnjinhao/nana) custom cont
 - Manage categorized properties and default values.
 - Easily create your own properties deriving the existing ones.
 
-<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/propertygrid.png" alt="propertygrid" height="300"></a>
+<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/propertygrid.png" alt="propertygrid" height="450"></a>
