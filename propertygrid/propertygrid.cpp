@@ -11,10 +11,6 @@
 #include <nana/gui/layout_utility.hpp>
 #include <nana/gui/element.hpp>
 #include <nana/gui/drawing.hpp>
-#include <list>
-#include <stdexcept>
-#include <algorithm>
-#include <cassert>
 
 
 #define			IBOX_SIZE		13
@@ -146,13 +142,13 @@ namespace nana
 
 				void scroll(const index_pair& pos, bool as_first, bool expand_category = true);
 
-				///Append a new category with a specified name and return a pointer to it.
+				/// Append a new category with a specified name and return a pointer to it.
 				category_t* create_cat(std::string&& text)
 				{
 					categories_.emplace_back(std::move(text));
 					return &categories_.back();
 				}
-				/// add a new cat created at "pos" and return a ref to it
+				/// Add a new cat created at "pos" and return a ref to it
 				category_t* create_cat(std::size_t pos, std::string&& text)
 				{
 					return &(*categories_.emplace(this->get(pos), std::move(text)));
@@ -552,28 +548,6 @@ namespace nana
 					v_offset(upwards ? static_cast<int>(scroll.v.step()) : -static_cast<int>(scroll.v.step()), true);
 					return true;
 				}
-
-				unsigned auto_width(unsigned col, unsigned max = 3000)
-				{
-					unsigned max_w{ 0 };
-					for(const auto &cat : lister.cat_container())
-						for(const auto &it : cat.items)
-						{
-							// precalcule text geometry
-							unsigned ts;
-							if(col == 0)
-								ts = graph->text_extent_size(it->label()).width;
-							else
-								ts = graph->text_extent_size(it->value()).width;
-							if(max_w < ts)
-								max_w = ts;
-						}
-					if(!max_w) return 0;
-
-					unsigned ext_w = scheme_ptr->ext_w;
-					columns.set_min_width(col, max_w + ext_w + 1 < max ? max_w + ext_w + 1 : max);
-					return max_w;
-				}
 			};
 
 
@@ -590,9 +564,9 @@ namespace nana
 
 
 				// ibox
-				box_.create(wd);
+				ibox_.create(wd);
 
-				box_.events().mouse_down.connect_front([this](const nana::arg_mouse& arg)
+				ibox_.events().mouse_down.connect_front([this](const nana::arg_mouse& arg)
 				{
 					if(!en_) // only if enabled
 						return;
@@ -602,21 +576,21 @@ namespace nana
 						// Reset
 						menu_.enabled(0, !isdefault());
 
-						menu_.popup(box_, arg.pos.x, arg.pos.y);
+						menu_.popup(ibox_, arg.pos.x, arg.pos.y);
 						arg.stop_propagation();
 					}
 				});
-				box_.events().mouse_enter.connect_front([this]()
+				ibox_.events().mouse_enter.connect_front([this]()
 				{
 					if(en_) // only if enabled
-						box_.bgcolor(nana::color(201, 222, 245));
+						ibox_.bgcolor(nana::color(201, 222, 245));
 				});
-				box_.events().mouse_leave.connect_front([this]()
+				ibox_.events().mouse_leave.connect_front([this]()
 				{
-					box_.bgcolor(ess_->lister.wd_ptr()->bgcolor());
+					ibox_.bgcolor(ess_->lister.wd_ptr()->bgcolor());
 				});
 
-				nana::drawing dw{ box_ };
+				nana::drawing dw{ ibox_ };
 				dw.draw([this](nana::paint::graphics& graph)
 				{
 					int b = (IBOX_SIZE - IBOX_RECT_SIZE) / 2;
@@ -694,10 +668,10 @@ namespace nana
 
 			void pgitem::draw_ibox(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const
 			{
-				box_.bgcolor(bgcolor);
-				box_.move(rect.x + (rect.width - IBOX_SIZE) / 2, (rect.height - IBOX_SIZE) / 2);
-				box_.size(nana::size(IBOX_SIZE, IBOX_SIZE));
-				API::refresh_window(box_);
+				ibox_.bgcolor(bgcolor);
+				ibox_.move(rect.x + (rect.width - IBOX_SIZE) / 2, (rect.height - IBOX_SIZE) / 2);
+				ibox_.size(nana::size(IBOX_SIZE, IBOX_SIZE));
+				API::refresh_window(ibox_);
 			}
 
 			void pgitem::update()
@@ -1488,6 +1462,30 @@ namespace nana
 		_m_ess().lister.enabled(_en = state);
 	}
 
+	unsigned propertygrid::labels_min_width() const
+	{
+		return _m_ess().columns.get_min_width(0);
+	}
+	propertygrid& propertygrid::labels_min_width(unsigned pixels)
+	{
+		auto & ess = _m_ess();
+		ess.columns.set_min_width(0, pixels);
+		ess.update();
+		return *this;
+	}
+
+	unsigned propertygrid::values_min_width() const
+	{
+		return _m_ess().columns.get_min_width(1);
+	}
+	propertygrid& propertygrid::values_min_width(unsigned pixels)
+	{
+		auto & ess = _m_ess();
+		ess.columns.set_min_width(1, pixels);
+		ess.update();
+		return *this;
+	}
+
 	void propertygrid::auto_draw(bool ad)
 	{
 		_m_ess().set_auto_draw(ad);
@@ -1500,55 +1498,16 @@ namespace nana
 		ess.update();
 	}
 
-	propertygrid& propertygrid::labels_width(unsigned pixels)
-	{
-		auto & ess = _m_ess();
-		ess.columns.set_min_width(0, pixels);
-		ess.update();
-		return *this;
-	}
-	propertygrid& propertygrid::values_width(unsigned pixels)
-	{
-		auto & ess = _m_ess();
-		ess.columns.set_min_width(1, pixels);
-		ess.update();
-		return *this;
-	}
-
-	unsigned propertygrid::labels_width() const
-	{
-		return _m_ess().columns.get_min_width(0);
-	}
-	unsigned propertygrid::values_width() const
-	{
-		return _m_ess().columns.get_min_width(1);
-	}
-
-	unsigned propertygrid::labels_auto_width(unsigned max)
-	{
-		auto & ess = _m_ess();
-		unsigned max_w = ess.auto_width(0, max);
-		ess.update();
-		return max_w;
-	}
-	unsigned propertygrid::values_auto_width(unsigned max)
-	{
-		auto & ess = _m_ess();
-		unsigned max_w = ess.auto_width(1, max);
-		ess.update();
-		return max_w;
-	}
-
-	propertygrid::cat_proxy propertygrid::append(std::string s)
+	propertygrid::cat_proxy propertygrid::append(std::string str)
 	{
 		auto & ess = _m_ess();
 
-		auto pos = find(s);
+		auto pos = find(str);
 		if(pos != npos)
 			return cat_proxy{ &ess, pos };
 
 		internal_scope_guard lock;
-		auto new_cat_ptr = ess.lister.create_cat(std::move(s));
+		auto new_cat_ptr = ess.lister.create_cat(std::move(str));
 		ess.update();
 
 		return cat_proxy{ &ess, new_cat_ptr };
