@@ -28,4 +28,4 @@ plot2d/demos/realtime/* - realtime plotting demo application
 
 plot2d/demos/spline/* - spline curve demo application
 
-<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/splinecurve.png" alt="splinecurve"></a>
+<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/SplineCurve.PNG" alt="splinecurve"></a>
