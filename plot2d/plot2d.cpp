@@ -232,35 +232,37 @@ void trace::update( paint::graphics& graph )
 axis::axis( plot * p )
     : myPlot( p )
 {
-    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 50 } );
+    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 30, 15 } );
     myLabelMin->caption("test");
-    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 50 } );
+    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 30, 15 } );
     myLabelMax->caption("test");
 }
 
 void axis::update( paint::graphics& graph )
 {
     int mn = 10 * ( myPlot->minY() / 10 );
-    std::stringstream ss;
-    ss << mn;
-    myLabelMin->caption(ss.str());
-    myLabelMin->move( 5,  myPlot->Y2Pixel( mn ) );
+    int ymn_px = myPlot->Y2Pixel( mn );
+    myLabelMin->caption(std::to_string(mn));
+    myLabelMin->move( 5,  ymn_px );
 
     int mx = 10 * ( myPlot->maxY() / 10 );
-    ss.str("");
-    ss << mx;
-    myLabelMax->caption(ss.str());
-    myLabelMax->move( 5,   myPlot->Y2Pixel( mx ) - 15 );
+    int ymx_px = myPlot->Y2Pixel( mx );
+    myLabelMax->caption(std::to_string( mx ));
+    myLabelMax->move( 5,   ymx_px - 15 );
 
-    graph.line( point(2, myPlot->Y2Pixel( mn )),
-                point(5, myPlot->Y2Pixel( mn )),
+
+    graph.line( point( 2, ymn_px ),
+                point( 2, ymx_px ),
                 colors::black );
-    graph.line( point( 2, myPlot->Y2Pixel( mn ) ),
-                point( 2, myPlot->Y2Pixel( mx ) ),
-                colors::black );
-    graph.line( point(2, myPlot->Y2Pixel( mx )),
-                point(5, myPlot->Y2Pixel( mx )),
-                colors::black );
+
+    int yinc = ( ymn_px - ymx_px ) / 4;
+    for( int ky = 0; ky < 4; ky++ )
+    {
+        int y = ymx_px + ky * yinc;
+        graph.line( point(2, y),
+                    point(5, y),
+                    colors::black );
+    }
 }
 
 

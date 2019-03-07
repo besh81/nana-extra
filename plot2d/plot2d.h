@@ -101,7 +101,11 @@ private:
         point
     } myType;
 };
+/** @brief Draw vertical line on LHS of plot for Y-axis
 
+    This class is internal and none of its methods should be
+    called by the application code
+*/
 class axis
 {
 public:
