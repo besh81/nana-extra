@@ -37,7 +37,7 @@ int main()
 
         // construct scatter plot of input points
         plot::trace& t2 = thePlot.AddPointTrace();
-        for( int k = 0; k < x.size(); k++ )
+        for( int k = 0; k < (int)x.size(); k++ )
         {
             t2.add( 10 * x[k], y[k] );
         }

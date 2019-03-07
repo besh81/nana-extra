@@ -13,6 +13,11 @@ class trace
 {
 public:
 
+    /** CTOR
+        Application code should not call this constructor
+        Rather call one of plot::AddPointTrace, plot::AddRealTimeTrace or plot::AddStaticTrace
+
+    */
     trace()
         : myType( eType::plot )
     {
@@ -56,9 +61,9 @@ public:
     */
     void add( double y );
 
-    /** add point to point trace
-        @param[in] x
-        @param[in] y
+    /** /brief add point to point trace
+        @param[in] x location
+        @param[in] y location
 
         An exception is thrown when this is called
         for a trace that has not been converted to points
@@ -101,7 +106,7 @@ private:
         point
     } myType;
 };
-/** @brief Draw vertical line on LHS of plot for Y-axis
+/** \brief Draw decorated vertical line on LHS of plot for Y-axis
 
     This class is internal and none of its methods should be
     called by the application code
@@ -127,7 +132,7 @@ private:
 };
 
 
-/** 2D plotting */
+/** \brief Draw a 2D plot */
 class plot
 {
 public:
@@ -142,10 +147,11 @@ public:
         delete myAxis;
     }
 
-    /** Add static trace
+    /** \brief Add static trace
         @return reference to new trace
 
         The data in a static trace does not change
+        A line is drawn between successive points
     */
     trace& AddStaticTrace()
     {
@@ -155,7 +161,7 @@ public:
         return *t;
     }
 
-    /** Add real time trace
+    /** \brief Add real time trace
         @param[in] w number of recent data points to display
         @return reference to new trace
 
@@ -172,10 +178,11 @@ public:
         return *t;
     }
 
-    /** Add point trace
+    /** \brief Add point trace
         @return reference to new trace
 
         A static trace for scatter plots
+        ( no line between points )
     */
     trace& AddPointTrace();
 
