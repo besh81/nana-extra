@@ -11,3 +11,21 @@ A collection of [Nana C++ Library](https://github.com/cnjinhao/nana) custom cont
 - Easily create your own properties deriving the existing ones.
 
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/propertygrid.png" alt="propertygrid" height="450"></a>
+
+## plot2d
+
+A 2D plotting widget for the nana library
+
+### Files:
+
+plot2d/plot.h, plot2d/plot.cpp - widget code, add to your projects
+
+plot2d/demos/main.cpp - demo application code
+
+plot2d/demos/nanaplot.cbp - codeblocks project to build demo application
+
+plot2d/demos/realtime/* - realtime plotting demo application
+
+plot2d/demos/spline/* - spline curve demo application
+
+<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/splinecurve.png" alt="splinecurve"></a>
