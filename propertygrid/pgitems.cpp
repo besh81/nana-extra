@@ -8,17 +8,96 @@
 #include <iostream>
 #include <algorithm>
 #include "pgitems.h"
-#include "color_helper.h"
-#include "lock_guard.h"
 
+
+#define	INHERITED_COLOR		"[inherited]"
 
 
 namespace nana
 {
+	class internal_lock_guard
+	{
+	public:
+		internal_lock_guard(bool* flag, bool lock_as_true = true)
+		{
+			flag_ = flag;
+			*flag_ = lock_as_true;
+		}
+
+		~internal_lock_guard()
+		{
+			*flag_ = !(*flag_);
+		}
+
+	private:
+		bool* flag_;
+	};
+
+
+
+	// color helper functions
+	nana::color to_color(const std::string& s)
+	{
+		bool inherited;
+		return to_color(s, inherited);
+	}
+
+	bool is_color_inherited(const std::string& s)
+	{
+		return s.find(INHERITED_COLOR) == 0 ? true : false;
+	}
+
+	nana::color to_color(const std::string& s, bool& inherited)
+	{
+		std::stringstream ss(s);
+		std::string item;
+		std::vector<int> items;
+
+		inherited = false;
+
+		try
+		{
+			while(getline(ss, item, ','))
+			{
+				if(item == INHERITED_COLOR)
+					inherited = true;
+				else
+					items.push_back(item.empty() ? 0 : std::stoi(item));
+			}
+		}
+		catch(...)
+		{
+			// reset
+			items.clear();
+		}
+		for(size_t i = 0; i < 3; ++i)
+		{
+			if(i >= items.size())
+				items.push_back(0);
+			else
+				items[i] = std::max(0, std::min(items[i], 255));
+		}
+
+		return nana::color(items[0], items[1], items[2]);
+	}
+
+	nana::color to_color(const std::string& r, const std::string& g, const std::string& b)
+	{
+		bool inherited;
+		return to_color(r + "," + g + "," + b, inherited);
+	}
+
+	std::string to_string(const nana::color& c, bool inherited)
+	{
+		return (inherited ? INHERITED_COLOR "," : "") + std::to_string(int(c.r())) + "," + std::to_string(int(c.g())) + "," + std::to_string(int(c.b()));
+	}
+
+
+
 	/// class pg_string
 	void pg_string::value(const std::string& value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		txt_.caption(value);
 		
 		pgitem::value(value);
@@ -223,7 +302,7 @@ namespace nana
 	{
 		value_ = value;
 
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		txt_.caption(value);
 	}
 
@@ -318,7 +397,7 @@ namespace nana
 
 	void pg_choice::option(std::size_t value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		if(value < cmb_.the_number_of_options())
 		{
 			cmb_.option(value);
@@ -372,7 +451,7 @@ namespace nana
 	/// class pg_check
 	void pg_check::value(const std::string& value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		if(value == "true" || value == "T" || value == "t" || value == "1")
 		{
 			chk_.check(true);
@@ -424,7 +503,7 @@ namespace nana
 	/// class pg_color
 	void pg_color::value(const std::string& value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 
 		color_ = nana::to_color(value);
 		rgb_[0].caption(std::to_string(static_cast<int>(color_.r())));

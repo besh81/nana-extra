@@ -35,14 +35,17 @@ int main()
 	cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_button("string + button", "Ciao")));
 	// append choice property
 	auto ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("choice")));
-	auto pgc = static_cast<nana::pg_choice*>(ip._m_pgitem());
-	pgc->push_back("One");
-	pgc->push_back("Two");
-	pgc->push_back("3");
+	auto pgchoiche = static_cast<nana::pg_choice*>(ip._m_pgitem());
+	pgchoiche->push_back("One");
+	pgchoiche->push_back("Two");
+	pgchoiche->push_back("3");
 	// append check property
 	cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_check("check", true)));
 	// append color property
-	cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color("color1", "255,0,0")));
+	cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color("color", "255,0,0")));
+	// append color+inherited property
+	ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color("color + inherited", "128,128,128", true)));
+	ip.value("0,255,0");
 
 	// connect the events
 	propgrid.events().property_changed([&txt](const nana::arg_propertygrid& arg)
