@@ -23,7 +23,7 @@ public:
     {
 
     }
-    /** Convert trace to real time operation
+    /** \brief Convert trace to real time operation
         @param[in] w number of data points to display
 
         Data points older than w scroll off the left edge of the plot and are lost
@@ -36,37 +36,37 @@ public:
         myY.resize( w );
     }
 
-    /** Convert trace to point operation for scatter plots */
-    void points()
+    /** \brief Convert trace to point operation for scatter plots */
+    void scatter()
     {
-        myType = eType::point;
+        myType = eType::scatter;
         myY.clear();
         myX.clear();
     }
 
-    /** set static data
+    /** \brief set plot data
         @param[in] y vector of data points to display
 
         Replaces any existing data.  Plot is NOT refreshed.
         An exception is thrown when this is called
-        for a trace that has been converted to real time.
+        for a trace that is not plot type
     */
     void set( const std::vector< double >& y );
 
-    /** add new value to real time data
+    /** \brief add new value to real time data
         @param[in] y the new data point
 
         An exception is thrown when this is called
-        for a trace that has not been converted to real time
+        for a trace that is not real time type.
     */
     void add( double y );
 
-    /** /brief add point to point trace
+    /** \brief add point to scatter trace
         @param[in] x location
         @param[in] y location
 
         An exception is thrown when this is called
-        for a trace that has not been converted to points
+        for a trace that is not scatter type
     */
 
     void add( double x, double y );
@@ -104,7 +104,7 @@ private:
     {
         plot,
         realtime,
-        point
+        scatter
     } myType;
 };
 /** \brief Draw decorated vertical line on LHS of plot for Y-axis
@@ -133,13 +133,26 @@ private:
 };
 
 
-/** \brief Draw a 2D plot */
+/** \brief Draw a 2D plot
+
+The plot contains one or more traces.
+
+Each trace can be of one of three types:
+
+- Plot: succesive y-values with line drawn between them.
+- Scatter: succesive x,y-values with box around each point
+- Realtime: a specified number of the most recent y-values
+
+Any number of plot and scatter traces can be shown together,
+only one realtime trace may be present in a plot.
+
+ */
 class plot
 {
 public:
 
-    /** CTOR
-        @param[in parent window where plot will be drawn
+    /** \brief CTOR
+        @param[in] parent window where plot will be drawn
     */
     plot( window parent );
 
@@ -153,6 +166,8 @@ public:
 
         The data in a static trace does not change
         A line is drawn between successive points
+        Specify y location only for each point.
+        The points will be evenly distributed along the x-axis
     */
     trace& AddStaticTrace()
     {
@@ -179,13 +194,15 @@ public:
         return *t;
     }
 
-    /** \brief Add point trace
+    /** \brief Add scatter trace
         @return reference to new trace
 
         A static trace for scatter plots
-        ( no line between points )
+        No line between points,
+          box around each point.
+        Specify x AND y locations for each point.
     */
-    trace& AddPointTrace();
+    trace& AddScatterTrace();
 
     int Y2Pixel( double y ) const
     {

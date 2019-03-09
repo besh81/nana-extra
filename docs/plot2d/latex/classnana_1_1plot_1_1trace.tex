@@ -1,0 +1,132 @@
+\hypertarget{classnana_1_1plot_1_1trace}{\section{nana\-:\-:plot\-:\-:trace Class Reference}
+\label{classnana_1_1plot_1_1trace}\index{nana\-::plot\-::trace@{nana\-::plot\-::trace}}
+}
+
+
+Single trace to be plotted.  
+
+
+
+
+{\ttfamily \#include $<$plot2d.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classnana_1_1plot_1_1trace_a108e78308cf2542618ded49496e66909}{trace} ()
+\item 
+void \hyperlink{classnana_1_1plot_1_1trace_a0e8375d6a795924345d354588b300a0d}{real\-Time} (int w)
+\begin{DoxyCompactList}\small\item\em Convert trace to real time operation. \end{DoxyCompactList}\item 
+\hypertarget{classnana_1_1plot_1_1trace_a26a4daad616b3dfc0b76bd1a3b558930}{void \hyperlink{classnana_1_1plot_1_1trace_a26a4daad616b3dfc0b76bd1a3b558930}{scatter} ()}\label{classnana_1_1plot_1_1trace_a26a4daad616b3dfc0b76bd1a3b558930}
+
+\begin{DoxyCompactList}\small\item\em Convert trace to point operation for scatter plots. \end{DoxyCompactList}\item 
+void \hyperlink{classnana_1_1plot_1_1trace_a681d2e5d8d335e7785b30ce9d5548bf5}{set} (const std\-::vector$<$ double $>$ \&y)
+\begin{DoxyCompactList}\small\item\em set plot data \end{DoxyCompactList}\item 
+void \hyperlink{classnana_1_1plot_1_1trace_a183d7b46d2af84c0baec752ecfe668dc}{add} (double y)
+\begin{DoxyCompactList}\small\item\em add new value to real time data \end{DoxyCompactList}\item 
+void \hyperlink{classnana_1_1plot_1_1trace_a7832bca87472ab44fd382f3eaa6cb17d}{add} (double x, double y)
+\begin{DoxyCompactList}\small\item\em add point to scatter trace \end{DoxyCompactList}\item 
+\hypertarget{classnana_1_1plot_1_1trace_a093e666f7ab2f6a044b9d02edb6f7c75}{void \hyperlink{classnana_1_1plot_1_1trace_a093e666f7ab2f6a044b9d02edb6f7c75}{color} (const colors \&clr)}\label{classnana_1_1plot_1_1trace_a093e666f7ab2f6a044b9d02edb6f7c75}
+
+\begin{DoxyCompactList}\small\item\em set color \end{DoxyCompactList}\item 
+\hypertarget{classnana_1_1plot_1_1trace_a0536b5fae95bf9b85c94bddce71511fe}{void \hyperlink{classnana_1_1plot_1_1trace_a0536b5fae95bf9b85c94bddce71511fe}{Plot} (\hyperlink{classnana_1_1plot_1_1plot}{plot} $\ast$p)}\label{classnana_1_1plot_1_1trace_a0536b5fae95bf9b85c94bddce71511fe}
+
+\begin{DoxyCompactList}\small\item\em set plot where this trace will appear \end{DoxyCompactList}\item 
+\hypertarget{classnana_1_1plot_1_1trace_af4bff91b067ae89bab62568e4e2843fd}{int {\bfseries size} ()}\label{classnana_1_1plot_1_1trace_af4bff91b067ae89bab62568e4e2843fd}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1trace_ae430b49df4b1702b9fba6fe0bf61fb39}{void \hyperlink{classnana_1_1plot_1_1trace_ae430b49df4b1702b9fba6fe0bf61fb39}{bounds} (double \&min, double \&max)}\label{classnana_1_1plot_1_1trace_ae430b49df4b1702b9fba6fe0bf61fb39}
+
+\begin{DoxyCompactList}\small\item\em min and max values in trace \end{DoxyCompactList}\item 
+\hypertarget{classnana_1_1plot_1_1trace_ab81fca07778b6922d9f44b84bb6fb437}{void \hyperlink{classnana_1_1plot_1_1trace_ab81fca07778b6922d9f44b84bb6fb437}{update} (paint\-::graphics \&graph)}\label{classnana_1_1plot_1_1trace_ab81fca07778b6922d9f44b84bb6fb437}
+
+\begin{DoxyCompactList}\small\item\em draw \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Single trace to be plotted. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classnana_1_1plot_1_1trace_a108e78308cf2542618ded49496e66909}{\index{nana\-::plot\-::trace@{nana\-::plot\-::trace}!trace@{trace}}
+\index{trace@{trace}!nana::plot::trace@{nana\-::plot\-::trace}}
+\subsubsection[{trace}]{\setlength{\rightskip}{0pt plus 5cm}nana\-::plot\-::trace\-::trace (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classnana_1_1plot_1_1trace_a108e78308cf2542618ded49496e66909}
+C\-T\-O\-R Application code should not call this constructor Rather call one of plot\-::\-Add\-Point\-Trace, \hyperlink{classnana_1_1plot_1_1plot_a4cc1af8e943cecf919b2662c4d71c20c}{plot\-::\-Add\-Real\-Time\-Trace} or \hyperlink{classnana_1_1plot_1_1plot_ac537d6bd9cb05cd1702d71f9b721ddde}{plot\-::\-Add\-Static\-Trace} 
+
+\subsection{Member Function Documentation}
+\hypertarget{classnana_1_1plot_1_1trace_a183d7b46d2af84c0baec752ecfe668dc}{\index{nana\-::plot\-::trace@{nana\-::plot\-::trace}!add@{add}}
+\index{add@{add}!nana::plot::trace@{nana\-::plot\-::trace}}
+\subsubsection[{add}]{\setlength{\rightskip}{0pt plus 5cm}void nana\-::plot\-::trace\-::add (
+\begin{DoxyParamCaption}
+\item[{double}]{y}
+\end{DoxyParamCaption}
+)}}\label{classnana_1_1plot_1_1trace_a183d7b46d2af84c0baec752ecfe668dc}
+
+
+add new value to real time data 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em y} & the new data point\\
+\hline
+\end{DoxyParams}
+An exception is thrown when this is called for a trace that is not real time type. \hypertarget{classnana_1_1plot_1_1trace_a7832bca87472ab44fd382f3eaa6cb17d}{\index{nana\-::plot\-::trace@{nana\-::plot\-::trace}!add@{add}}
+\index{add@{add}!nana::plot::trace@{nana\-::plot\-::trace}}
+\subsubsection[{add}]{\setlength{\rightskip}{0pt plus 5cm}void nana\-::plot\-::trace\-::add (
+\begin{DoxyParamCaption}
+\item[{double}]{x, }
+\item[{double}]{y}
+\end{DoxyParamCaption}
+)}}\label{classnana_1_1plot_1_1trace_a7832bca87472ab44fd382f3eaa6cb17d}
+
+
+add point to scatter trace 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em x} & location \\
+\hline
+\mbox{\tt in}  & {\em y} & location\\
+\hline
+\end{DoxyParams}
+An exception is thrown when this is called for a trace that is not scatter type \hypertarget{classnana_1_1plot_1_1trace_a0e8375d6a795924345d354588b300a0d}{\index{nana\-::plot\-::trace@{nana\-::plot\-::trace}!real\-Time@{real\-Time}}
+\index{real\-Time@{real\-Time}!nana::plot::trace@{nana\-::plot\-::trace}}
+\subsubsection[{real\-Time}]{\setlength{\rightskip}{0pt plus 5cm}void nana\-::plot\-::trace\-::real\-Time (
+\begin{DoxyParamCaption}
+\item[{int}]{w}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classnana_1_1plot_1_1trace_a0e8375d6a795924345d354588b300a0d}
+
+
+Convert trace to real time operation. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em w} & number of data points to display\\
+\hline
+\end{DoxyParams}
+Data points older than w scroll off the left edge of the plot and are lost \hypertarget{classnana_1_1plot_1_1trace_a681d2e5d8d335e7785b30ce9d5548bf5}{\index{nana\-::plot\-::trace@{nana\-::plot\-::trace}!set@{set}}
+\index{set@{set}!nana::plot::trace@{nana\-::plot\-::trace}}
+\subsubsection[{set}]{\setlength{\rightskip}{0pt plus 5cm}void nana\-::plot\-::trace\-::set (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ double $>$ \&}]{y}
+\end{DoxyParamCaption}
+)}}\label{classnana_1_1plot_1_1trace_a681d2e5d8d335e7785b30ce9d5548bf5}
+
+
+set plot data 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em y} & vector of data points to display\\
+\hline
+\end{DoxyParams}
+Replaces any existing data. Plot is N\-O\-T refreshed. An exception is thrown when this is called for a trace that is not plot type 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/\-James/code/nana-\/extra/plot2d/plot2d.\-h\item 
+C\-:/\-Users/\-James/code/nana-\/extra/plot2d/plot2d.\-cpp\end{DoxyCompactItemize}

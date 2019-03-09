@@ -15,11 +15,11 @@ plot::plot( window parent )
     myAxis = new axis( this );
 }
 
-trace& plot::AddPointTrace()
+trace& plot::AddScatterTrace()
 {
     trace * t = new trace();
     t->Plot( this );
-    t->points();
+    t->scatter();
     myTrace.push_back( t );
     return *t;
 }
@@ -112,8 +112,8 @@ void trace::add( double y )
 
 void trace::add( double x, double y )
 {
-    if( myType != eType::point )
-        throw std::runtime_error("nanaplot error: point data added to non point type trace");
+    if( myType != eType::scatter )
+        throw std::runtime_error("nanaplot error: point data added to non scatter type trace");
     myX.push_back( x );
     myY.push_back( y );
 }
@@ -132,8 +132,6 @@ void trace::update( paint::graphics& graph )
     bool first = true;
     float x    = myPlot->XOffset();
     float xinc = myPlot->xinc();
-    double s   = myPlot->Scale();
-    int yOffset = myPlot->YOffset();
     double prev;
 
 
@@ -166,11 +164,11 @@ void trace::update( paint::graphics& graph )
         }
         break;
 
-    case eType::point:
+    case eType::scatter:
 
         for( int k = 0; k < (int)myX.size(); k++ )
         {
-            double x = myPlot->XOffset() + xinc * myX[k];
+            int x = (int) ( myPlot->XOffset() + xinc * myX[k] );
             graph.rectangle(
                 rectangle{ x-5,  myPlot->Y2Pixel( myY[ k ] )-5,
                            10, 10 },
