@@ -159,15 +159,23 @@ public:
     {
         delete myLabelMin;
         delete myLabelMax;
+        delete myLabelZero;
     }
 
     /// draw
     void update( paint::graphics& graph );
 
+    void Grid( bool f )
+    {
+        myfGrid = f;
+    }
+
 private:
     plot * myPlot;
     label * myLabelMin;
     label * myLabelMax;
+    label * myLabelZero;
+    bool myfGrid;
 };
 
 
@@ -242,6 +250,11 @@ public:
     */
     trace& AddScatterTrace();
 
+    void Grid( bool enable )
+    {
+        myAxis->Grid( enable );
+    }
+
     int Y2Pixel( double y ) const
     {
         return myYOffset - myScale * y;
@@ -313,6 +326,8 @@ private:
 
     /// arrange for the plot to be updated when needed
     void RegisterDrawingFunction();
+
+    int MaxXPixel();
 
 };
 

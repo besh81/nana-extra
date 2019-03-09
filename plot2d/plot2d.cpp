@@ -92,10 +92,7 @@ void trace::set( const std::vector< double >& y )
     if( myType != eType::plot )
         throw std::runtime_error("nanaplot error: plot data added to non plot trace");
 
-    myY.clear();
-    for( double s : y )
-        myY.push_back( s );
-    //myY = y;
+    myY = y;
 
     std::cout << "plot::trace::set " << myY.size() << "\n";
 }
@@ -224,11 +221,14 @@ void trace::update( paint::graphics& graph )
 
 axis::axis( plot * p )
     : myPlot( p )
+    , myfGrid( false )
 {
     myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
     myLabelMin->caption("test");
     myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
     myLabelMax->caption("test");
+    myLabelZero = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
+    myLabelZero->caption("0.0");
 }
 
 void axis::update( paint::graphics& graph )
@@ -252,13 +252,43 @@ void axis::update( paint::graphics& graph )
                 point( 2, ymx_px ),
                 colors::black );
 
-    int yinc = ( ymn_px - ymx_px ) / 4;
-    for( int ky = 0; ky < 4; ky++ )
+    if( mn * mx < 0 )
     {
-        int y = ymx_px + ky * yinc;
-        graph.line( point(2, y),
-                    point(5, y),
+        graph.line( point(2, ymx_px),
+                    point(5, ymx_px),
                     colors::black );
+        int y0_px = myPlot->Y2Pixel( 0 );
+        myLabelZero->move( 5,   y0_px - 15 );
+        myLabelZero->show();
+        graph.line( point(2, y0_px),
+                    point(5, y0_px),
+                    colors::black );
+        graph.line( point(2, ymn_px),
+                    point(5, ymn_px),
+                    colors::black );
+        if( myfGrid )
+            for( int k=5; k<graph.width(); k=k+10 ) {
+                graph.set_pixel(k, y0_px, colors::blue );
+                graph.set_pixel(k+1, y0_px, colors::blue );
+            }
+    }
+    else
+    {
+        myLabelZero->hide();
+        int yinc = ( ymn_px - ymx_px ) / 4;
+        for( int ky = 0; ky < 4; ky++ )
+        {
+            int y = ymx_px + ky * yinc;
+            graph.line( point(2, y),
+                        point(5, y),
+                        colors::black );
+            if( myfGrid )
+                for( int k=5; k<graph.width(); k=k+10 )
+                {
+                    graph.set_pixel(k, y, colors::blue );
+                    graph.set_pixel(k+1, y, colors::blue );
+                }
+        }
     }
 }
 
