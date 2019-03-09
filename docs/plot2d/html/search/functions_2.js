@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['color',['color',['../classnana_1_1plot_1_1trace.html#a093e666f7ab2f6a044b9d02edb6f7c75',1,'nana::plot::trace']]]
+  ['plot',['plot',['../classnana_1_1plot_1_1plot.html#a36277db9ef5e9405e7a6b9621d10d539',1,'nana::plot::plot']]]
 ];

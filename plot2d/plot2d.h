@@ -8,41 +8,42 @@ namespace plot
 {
 class plot;
 
-/// Single trace to be plotted
+/** \brief Single trace to be plotted
+
+    Application code shouild not attempt to construct a trace
+    Rather call one of plot::AddPointTrace, plot::AddRealTimeTrace or plot::AddStaticTrace
+    which return a reference to the trace which can be configured
+    and be populated with data.
+
+    <pre>
+        form fm;
+
+         construct plot to be drawn on form
+
+        plot::plot thePlot( fm );
+
+         construct plot trace
+
+        auto t1 = thePlot.AddStaticTrace();
+
+         provide some data for  trace
+
+        std::vector< double > d1 { 10, 15, 20, 25, 30, 25, 20, 15, 10 };
+        t1.set( d1 );
+
+         plot in blue
+
+        t1.color( colors::blue );
+
+         show and run
+
+        fm.show();
+        exec();
+    </pre>
+*/
 class trace
 {
 public:
-
-    /** CTOR
-        Application code should not call this constructor
-        Rather call one of plot::AddPointTrace, plot::AddRealTimeTrace or plot::AddStaticTrace
-
-    */
-    trace()
-        : myType( eType::plot )
-    {
-
-    }
-    /** \brief Convert trace to real time operation
-        @param[in] w number of data points to display
-
-        Data points older than w scroll off the left edge of the plot and are lost
-    */
-    void realTime( int w )
-    {
-        myType = eType::realtime;
-        myRealTimeNext = 0;
-        myY.clear();
-        myY.resize( w );
-    }
-
-    /** \brief Convert trace to point operation for scatter plots */
-    void scatter()
-    {
-        myType = eType::scatter;
-        myY.clear();
-        myX.clear();
-    }
 
     /** \brief set plot data
         @param[in] y vector of data points to display
@@ -77,10 +78,60 @@ public:
         myColor = clr;
     }
 
+
+
+private:
+
+    friend plot;
+
+    plot * myPlot;
+    std::vector< double > myX;
+    std::vector< double > myY;
+    colors myColor;
+    int myRealTimeNext;
+    enum class eType
+    {
+        plot,
+        realtime,
+        scatter
+    } myType;
+
+    /** CTOR
+    Application code should not call this constructor
+    Rather call one of plot::AddPointTrace, plot::AddRealTimeTrace or plot::AddStaticTrace
+
+    */
+    trace()
+        : myType( eType::plot )
+    {
+
+    }
+
     /// set plot where this trace will appear
     void Plot( plot * p )
     {
         myPlot = p;
+    }
+
+    /** \brief Convert trace to real time operation
+    @param[in] w number of data points to display
+
+    Data points older than w scroll off the left edge of the plot and are lost
+    */
+    void realTime( int w )
+    {
+        myType = eType::realtime;
+        myRealTimeNext = 0;
+        myY.clear();
+        myY.resize( w );
+    }
+
+    /** \brief Convert trace to point operation for scatter plots */
+    void scatter()
+    {
+        myType = eType::scatter;
+        myY.clear();
+        myX.clear();
     }
 
     int size()
@@ -93,19 +144,6 @@ public:
 
     /// draw
     void update( paint::graphics& graph );
-
-private:
-    plot * myPlot;
-    std::vector< double > myX;
-    std::vector< double > myY;
-    colors myColor;
-    int myRealTimeNext;
-    enum class eType
-    {
-        plot,
-        realtime,
-        scatter
-    } myType;
 };
 /** \brief Draw decorated vertical line on LHS of plot for Y-axis
 
