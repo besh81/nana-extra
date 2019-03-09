@@ -5,14 +5,11 @@ A collection of [Nana C++ Library](https://github.com/cnjinhao/nana) custom cont
 
 
 ## [propertygrid](https://github.com/besh81/nana-extra/wiki/propertygrid)
-- A specialized grid for editing properties.
-- It comes with a list of ready-to-use property classes include strings, numbers, flag sets, colors and many others.
-- Manage categorized properties and default values.
-- Easily create your own properties deriving the existing ones.
+A specialized grid for editing properties. It comes with a list of ready-to-use property classes include strings, numbers, flag sets, colors and many others.
 
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/propertygrid.png" alt="propertygrid" height="450"></a>
 
-## plot2d
+## [plot2d](https://github.com/besh81/nana-extra/wiki/plot2d)
 
 A 2D plotting widget for the nana library
 
