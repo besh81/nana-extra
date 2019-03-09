@@ -88,7 +88,8 @@ public:
         return (int) myY.size();
     }
 
-    void bounds( int& min, int& max );
+    /// min and max values in trace
+    void bounds( double& min, double& max );
 
     /// draw
     void update( paint::graphics& graph );
@@ -195,11 +196,11 @@ public:
     {
         return myXinc;
     }
-    int minY()
+    double minY()
     {
         return myMinY;
     }
-    int maxY()
+    double maxY()
     {
         return myMaxY;
     }
@@ -244,7 +245,7 @@ private:
     std::vector< trace* > myTrace;
 
     float myXinc;
-    int myMinY, myMaxY;
+    double myMinY, myMaxY;
     double myScale;
     int myXOffset;
     int myYOffset;

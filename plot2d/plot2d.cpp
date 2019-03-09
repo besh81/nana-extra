@@ -1,4 +1,5 @@
-#include "iostream"
+#include <iostream>
+#include <algorithm>
 #include <nana/gui.hpp>
 #include "plot2d.h"
 namespace nana
@@ -67,7 +68,7 @@ void plot::CalcScale( int w, int h )
     {
         if( t->size() > maxCount )
             maxCount = t->size();
-        int tmin, tmax;
+        double tmin, tmax;
         t->bounds( tmin, tmax );
         if( tmin < myMinY )
             myMinY = tmin;
@@ -83,6 +84,8 @@ void plot::CalcScale( int w, int h )
         myScale = 0.9 * h / ( myMaxY - myMinY );
     myXOffset = 0.05 * w;
     myYOffset = h + myScale * myMinY;
+
+    //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
 }
 void trace::set( const std::vector< double >& y )
 {
@@ -115,21 +118,13 @@ void trace::add( double x, double y )
     myY.push_back( y );
 }
 
-void trace::bounds( int& tmin, int& tmax )
+void trace::bounds( double& tmin, double& tmax )
 {
-    if( ! myY.size() )
-        return;
-    tmin = myY[0];
-    tmax = tmin;
-    for( auto y : myY )
-    {
-        if( y < tmin )
-            tmin = y;
-        if( y > tmax )
-            tmax = y;
-    }
-    tmin--;
-    tmax++;
+    auto result = std::minmax_element(
+                      myY.begin(),
+                      myY.end());
+    tmin = *result.first;
+    tmax = *result.second;
 }
 
 void trace::update( paint::graphics& graph )
@@ -173,7 +168,7 @@ void trace::update( paint::graphics& graph )
 
     case eType::point:
 
-        for( int k = 0; k < myX.size(); k++ )
+        for( int k = 0; k < (int)myX.size(); k++ )
         {
             double x = myPlot->XOffset() + xinc * myX[k];
             graph.rectangle(
@@ -232,24 +227,28 @@ void trace::update( paint::graphics& graph )
 axis::axis( plot * p )
     : myPlot( p )
 {
-    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 30, 15 } );
+    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
     myLabelMin->caption("test");
-    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 30, 15 } );
+    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
     myLabelMax->caption("test");
 }
 
 void axis::update( paint::graphics& graph )
 {
-    int mn = 10 * ( myPlot->minY() / 10 );
+    double mn = 10 * ( myPlot->minY() / 10 );
+    double mx = 10 * ( myPlot->maxY() / 10 );
+    if( mx-mn < 2 )
+    {
+        mn = myPlot->minY();
+        mx = myPlot->maxY();
+    }
     int ymn_px = myPlot->Y2Pixel( mn );
     myLabelMin->caption(std::to_string(mn));
     myLabelMin->move( 5,  ymn_px );
 
-    int mx = 10 * ( myPlot->maxY() / 10 );
     int ymx_px = myPlot->Y2Pixel( mx );
     myLabelMax->caption(std::to_string( mx ));
     myLabelMax->move( 5,   ymx_px - 15 );
-
 
     graph.line( point( 2, ymn_px ),
                 point( 2, ymx_px ),
