@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="scroller" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc_v83" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../bin/scroller" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc_v83" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../bin/scroller" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc_v83" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../../../panel_scrolled" />
+			<Add directory="$(#nana.include)" />
+		</Compiler>
+		<Linker>
+			<Add library="nana" />
+			<Add library="gdi32" />
+			<Add library="comdlg32" />
+			<Add library="stdc++fs" />
+			<Add directory="$(#nana.lib)" />
+		</Linker>
+		<Unit filename="../../panel_scrolled.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

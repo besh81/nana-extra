@@ -250,6 +250,7 @@ public:
     */
     trace& AddScatterTrace();
 
+    /** \brief Enable display of grid markings */
     void Grid( bool enable )
     {
         myAxis->Grid( enable );
