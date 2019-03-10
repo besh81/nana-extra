@@ -280,6 +280,8 @@ namespace nana
 
 				void expand( bool exp );               ///< Expand or collapse the category
 
+				item_proxy find( const std::string& prop_label ); ///< find item in category with specified label
+
 				cat_proxy& text(std::string);	///< Sets category text
 				std::string text() const;		///< Gets category text
 
@@ -385,6 +387,10 @@ namespace nana
 		std::size_t find(std::string) const;			///< Finds category with given name. Returns the category position if found or npos otherwise
 
 		item_proxy at(const index_pair& idx) const;		///< Returns an item by the specified absolute position
+
+		item_proxy find(								///< Returns an item of specified label in specified category name
+		           const std::string& catName,
+                   const std::string& propName ) const;
 
 		void clear(std::size_t cat);					///< Removes all the items from the specified category
 		void clear();									///< Removes all the items from all categories

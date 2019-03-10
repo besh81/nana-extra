@@ -1350,6 +1350,19 @@ namespace nana
 				return cat_->items.size();
 			}
 
+			item_proxy cat_proxy::find( const std::string& prop_name )
+			{
+			    size_t pos = 0;
+			    for( auto& i : *this )
+			    {
+			        if( i.label() == prop_name ) {
+			            break;
+			        }
+			        pos++;
+			    }
+			    return item_proxy(ess_, index_pair(pos_, pos));
+			}
+
 			// Behavior of Iterator
 			cat_proxy& cat_proxy::operator=(const cat_proxy& r)
 			{
@@ -1547,6 +1560,13 @@ namespace nana
 				return pos;
 		}
 		return npos;
+	}
+
+	propertygrid::item_proxy propertygrid::find(
+	    const std::string& catName,
+	    const std::string& propName ) const
+	{
+	    return at( find( catName )).find(propName);
 	}
 
 	propertygrid::item_proxy propertygrid::at(const index_pair& idx) const
