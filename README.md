@@ -40,15 +40,15 @@ plot2d/demos/spline/* - spline curve demo application
 
 ## panel_scrolled
 
- Nana panel specialization to display small visible scrollable part of the panel
+Nana panel specialization to display small visible scrollable part of the panel
 
-    The scrolled panel is large and mostly hidden.  The widgets are placed on this panel.
+The scrolled panel is large and mostly hidden.  The widgets are placed on this panel.
 
-    The visible panel is small and transparent, allows user to see a small part of the scrolled panel.
+The visible panel is small and transparent, allows user to see a small part of the scrolled panel.
 
-    The visible panel is surrounded by scroll bars which control what part of scrolled panel is seen.
+The visible panel is surrounded by scroll bars which control what part of scrolled panel is seen.
 
-    The visible panel and scroll bars are constructed automatically, to the dimensions specifed in the scrolled panel constructor
+The visible panel and scroll bars are constructed automatically, to the dimensions specifed in the scrolled panel constructor
     
 ### Files:
 
