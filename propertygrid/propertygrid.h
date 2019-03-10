@@ -216,7 +216,7 @@ namespace nana
 				drawer_lister_impl* drawer_lister_;
 			};//end class trigger
 
-			  /// operate with absolute positions and contain only the position but mantain pointers to parts of the real items 
+			  /// operate with absolute positions and contain only the position but mantain pointers to parts of the real items
 			  /// item_proxy self, it references and iterators are not invalidated by sort()
 			class item_proxy
 				: public std::iterator<std::input_iterator_tag, item_proxy>
@@ -260,7 +260,7 @@ namespace nana
 
 			private:
 				essence_t * _m_ess() const;
-			
+
 				pgitem& _m_property() const;
 
 				essence_t* ess_;
@@ -277,6 +277,8 @@ namespace nana
 				cat_proxy(essence_t*, category_t*);			///< Constructor
 
 				item_proxy append(pgitem_ptr p);	///< Appends passed item at the end of this category
+
+				void expand( bool exp );               ///< Expand or collapse the category
 
 				cat_proxy& text(std::string);	///< Sets category text
 				std::string text() const;		///< Gets category text

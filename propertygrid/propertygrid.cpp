@@ -1297,6 +1297,12 @@ namespace nana
 				return cat_->text;
 			}
 
+			void cat_proxy::expand( bool exp )
+			{
+			    cat_->expand = exp;
+			}
+
+
 			//Behavior of a container
 			item_proxy cat_proxy::begin() const
 			{
