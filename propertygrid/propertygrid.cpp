@@ -1206,6 +1206,10 @@ namespace nana
 				_m_ess()->update();
 				return *this;
 			}
+			item_proxy& item_proxy::operator=(const std::string& new_value_string )
+			{
+			    return value( new_value_string, false );
+			}
 			std::string item_proxy::value() const
 			{
 				return _m_property().value();
