@@ -99,7 +99,7 @@ namespace nana
 	{
 		internal_lock_guard evt_lock(&evt_emit_, false);
 		txt_.caption(value);
-		
+
 		pgitem::value(value);
 	}
 
@@ -145,6 +145,18 @@ namespace nana
 				emit_event();
 			}
 		});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+		        if( !arg.getting )
+		        {
+		            // just lost focus, so capture the value left by the user, if changed
+		            if( txt_.caption() != pgitem::value() )
+		            {
+		                pgitem::value( txt_.caption() );
+		                emit_event();
+		            }
+		        }
+    	});
 	}
 
 	void pg_string::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -216,6 +228,19 @@ namespace nana
 				arg.stop_propagation();
 			}
 		});
+
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+		        if( !arg.getting )
+		        {
+		            // just lost focus, so capture the value left by the user, if changed
+		            if( txt_.caption() != pgitem::value() )
+		            {
+		                pgitem::value( txt_.caption() );
+		                emit_event();
+		            }
+		        }
+   		 });
 
 		txt_.set_accept([](wchar_t c) -> bool
 		{
@@ -658,7 +683,7 @@ namespace nana
 		for(auto & i : rgb_)
 			API::show_window(i, true);
 
-		
+
 		// colorbox R G B
 		int availw = labelw + valuew;
 		if(availw)
