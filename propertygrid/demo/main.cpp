@@ -52,7 +52,7 @@ int main()
 	{
 		auto ip = arg.item;
 		txt.append("[cat: " + std::to_string(ip.pos().cat) + ", pos: " + std::to_string(ip.pos().item) + "] ", true);
-		txt.append("   label: " + ip.label() + "\n", true);
+		txt.append("   label: " + ip.label()  + ", value: " + ip.value() + "\n", true);
 	});
 
 
