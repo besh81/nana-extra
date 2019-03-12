@@ -1,0 +1,147 @@
+\hypertarget{classnana_1_1plot_1_1plot}{\section{nana\-:\-:plot\-:\-:plot Class Reference}
+\label{classnana_1_1plot_1_1plot}\index{nana\-::plot\-::plot@{nana\-::plot\-::plot}}
+}
+
+
+Draw a 2\-D plot.  
+
+
+
+
+{\ttfamily \#include $<$plot2d.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classnana_1_1plot_1_1plot_a36277db9ef5e9405e7a6b9621d10d539}{plot} (window parent)
+\begin{DoxyCompactList}\small\item\em C\-T\-O\-R. \end{DoxyCompactList}\item 
+\hyperlink{classnana_1_1plot_1_1trace}{trace} \& \hyperlink{classnana_1_1plot_1_1plot_ac537d6bd9cb05cd1702d71f9b721ddde}{Add\-Static\-Trace} ()
+\begin{DoxyCompactList}\small\item\em Add static trace. \end{DoxyCompactList}\item 
+\hyperlink{classnana_1_1plot_1_1trace}{trace} \& \hyperlink{classnana_1_1plot_1_1plot_a4cc1af8e943cecf919b2662c4d71c20c}{Add\-Real\-Time\-Trace} (int w)
+\begin{DoxyCompactList}\small\item\em Add real time trace. \end{DoxyCompactList}\item 
+\hyperlink{classnana_1_1plot_1_1trace}{trace} \& \hyperlink{classnana_1_1plot_1_1plot_a753b33d190cc2cbe2ba4176cec7b49d0}{Add\-Scatter\-Trace} ()
+\begin{DoxyCompactList}\small\item\em Add scatter trace. \end{DoxyCompactList}\item 
+\hypertarget{classnana_1_1plot_1_1plot_a0df7cfca181bb0f2c58f83cfe7bcbea1}{void {\bfseries Grid} (bool enable)}\label{classnana_1_1plot_1_1plot_a0df7cfca181bb0f2c58f83cfe7bcbea1}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_a4b0f06a34abd91b5600ce1bef2b378c5}{int {\bfseries Y2\-Pixel} (double y) const }\label{classnana_1_1plot_1_1plot_a4b0f06a34abd91b5600ce1bef2b378c5}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_ac4b6cf680c0c2d8aa8ce28bdba3e6be7}{float {\bfseries xinc} ()}\label{classnana_1_1plot_1_1plot_ac4b6cf680c0c2d8aa8ce28bdba3e6be7}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_a7df61fa90c6f20a3ec781fe9aae655cc}{double {\bfseries min\-Y} ()}\label{classnana_1_1plot_1_1plot_a7df61fa90c6f20a3ec781fe9aae655cc}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_aae2bfb17d5ccf8bc4e02ea95baef6bf4}{double {\bfseries max\-Y} ()}\label{classnana_1_1plot_1_1plot_aae2bfb17d5ccf8bc4e02ea95baef6bf4}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_ad6e48b3394aae14d2b4a5fb2861e979b}{double {\bfseries Scale} ()}\label{classnana_1_1plot_1_1plot_ad6e48b3394aae14d2b4a5fb2861e979b}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_a050920266a3ce42ff586dc30e4b3e751}{int {\bfseries X\-Offset} ()}\label{classnana_1_1plot_1_1plot_a050920266a3ce42ff586dc30e4b3e751}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_a45eda9b995045d7a888aed017de555aa}{int {\bfseries Y\-Offset} ()}\label{classnana_1_1plot_1_1plot_a45eda9b995045d7a888aed017de555aa}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_a2830cb45a1053bf68f3b2b851ae4ea02}{window {\bfseries parent} ()}\label{classnana_1_1plot_1_1plot_a2830cb45a1053bf68f3b2b851ae4ea02}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_a770b2805bc876fb1616fbe5ee28a135d}{void {\bfseries update} ()}\label{classnana_1_1plot_1_1plot_a770b2805bc876fb1616fbe5ee28a135d}
+
+\item 
+\hypertarget{classnana_1_1plot_1_1plot_aa444d13347e0893ebf79951ad3608732}{void {\bfseries debug} ()}\label{classnana_1_1plot_1_1plot_aa444d13347e0893ebf79951ad3608732}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Draw a 2\-D plot. 
+
+The plot contains one or more traces.
+
+Each trace can be of one of three types\-:
+
+
+\begin{DoxyItemize}
+\item Plot\-: succesive y-\/values with line drawn between them.
+\item Scatter\-: succesive x,y-\/values with box around each point
+\item Realtime\-: a specified number of the most recent y-\/values
+\end{DoxyItemize}
+
+Any number of plot and scatter traces can be shown together, only one realtime trace may be present in a plot. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classnana_1_1plot_1_1plot_a36277db9ef5e9405e7a6b9621d10d539}{\index{nana\-::plot\-::plot@{nana\-::plot\-::plot}!plot@{plot}}
+\index{plot@{plot}!nana::plot::plot@{nana\-::plot\-::plot}}
+\subsubsection[{plot}]{\setlength{\rightskip}{0pt plus 5cm}nana\-::plot\-::plot\-::plot (
+\begin{DoxyParamCaption}
+\item[{window}]{parent}
+\end{DoxyParamCaption}
+)}}\label{classnana_1_1plot_1_1plot_a36277db9ef5e9405e7a6b9621d10d539}
+
+
+C\-T\-O\-R. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em parent} & window where plot will be drawn \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classnana_1_1plot_1_1plot_a4cc1af8e943cecf919b2662c4d71c20c}{\index{nana\-::plot\-::plot@{nana\-::plot\-::plot}!Add\-Real\-Time\-Trace@{Add\-Real\-Time\-Trace}}
+\index{Add\-Real\-Time\-Trace@{Add\-Real\-Time\-Trace}!nana::plot::plot@{nana\-::plot\-::plot}}
+\subsubsection[{Add\-Real\-Time\-Trace}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trace}\& nana\-::plot\-::plot\-::\-Add\-Real\-Time\-Trace (
+\begin{DoxyParamCaption}
+\item[{int}]{w}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classnana_1_1plot_1_1plot_a4cc1af8e943cecf919b2662c4d71c20c}
+
+
+Add real time trace. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em w} & number of recent data points to display \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+reference to new trace
+\end{DoxyReturn}
+The data in a real time trace receives new values from time to time The display shows w recent values. Older values scroll off the left hand side of the plot and disappear. \hypertarget{classnana_1_1plot_1_1plot_a753b33d190cc2cbe2ba4176cec7b49d0}{\index{nana\-::plot\-::plot@{nana\-::plot\-::plot}!Add\-Scatter\-Trace@{Add\-Scatter\-Trace}}
+\index{Add\-Scatter\-Trace@{Add\-Scatter\-Trace}!nana::plot::plot@{nana\-::plot\-::plot}}
+\subsubsection[{Add\-Scatter\-Trace}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trace} \& nana\-::plot\-::plot\-::\-Add\-Scatter\-Trace (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnana_1_1plot_1_1plot_a753b33d190cc2cbe2ba4176cec7b49d0}
+
+
+Add scatter trace. 
+
+\begin{DoxyReturn}{Returns}
+reference to new trace
+\end{DoxyReturn}
+A static trace for scatter plots No line between points, box around each point. Specify x A\-N\-D y locations for each point. \hypertarget{classnana_1_1plot_1_1plot_ac537d6bd9cb05cd1702d71f9b721ddde}{\index{nana\-::plot\-::plot@{nana\-::plot\-::plot}!Add\-Static\-Trace@{Add\-Static\-Trace}}
+\index{Add\-Static\-Trace@{Add\-Static\-Trace}!nana::plot::plot@{nana\-::plot\-::plot}}
+\subsubsection[{Add\-Static\-Trace}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trace}\& nana\-::plot\-::plot\-::\-Add\-Static\-Trace (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classnana_1_1plot_1_1plot_ac537d6bd9cb05cd1702d71f9b721ddde}
+
+
+Add static trace. 
+
+\begin{DoxyReturn}{Returns}
+reference to new trace
+\end{DoxyReturn}
+The data in a static trace does not change A line is drawn between successive points Specify y location only for each point. The points will be evenly distributed along the x-\/axis 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/\-James/code/nana-\/extra/plot2d/plot2d.\-h\item 
+C\-:/\-Users/\-James/code/nana-\/extra/plot2d/plot2d.\-cpp\end{DoxyCompactItemize}

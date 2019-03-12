@@ -23,6 +23,9 @@ int main()
         std::vector< double > x { 0, 1, 2, 3, 4 };
         std::vector< double > y {  100, 50, -100, 50, 200 };
 
+        for( double& v : y )
+            v /= 1000;
+
         // construct spline curve through input points
         raven::cSpline spline( x, y );
         std::vector< double > curve;
@@ -36,7 +39,7 @@ int main()
         t1.color( colors::red );
 
         // construct scatter plot of input points
-        plot::trace& t2 = thePlot.AddPointTrace();
+        plot::trace& t2 = thePlot.AddScatterTrace();
         for( int k = 0; k < (int)x.size(); k++ )
         {
             t2.add( 10 * x[k], y[k] );

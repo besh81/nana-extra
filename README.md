@@ -11,7 +11,18 @@ A specialized grid for editing properties. It comes with a list of ready-to-use 
 
 ## [plot2d](https://github.com/besh81/nana-extra/wiki/plot2d)
 
-A 2D plotting widget for the nana library
+A 2D plotting widget for the nana library.
+
+The plot contains one or more traces.
+
+Each trace can be of one of three types:
+
+- Plot: succesive y-values with line drawn between them.
+- Scatter: succesive x,y-values with box around each point
+- Realtime: a specified number of the most recent y-values
+
+Any number of plot and scatter traces can be shown together,
+only one realtime trace may be present in a plot.
 
 ### Files:
 
@@ -25,4 +36,24 @@ plot2d/demos/realtime/* - realtime plotting demo application
 
 plot2d/demos/spline/* - spline curve demo application
 
-<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/SplineCurve.PNG" alt="splinecurve"></a>
+<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/SplineCurve.PNG" alt="plot2d"></a>
+
+## panel_scrolled
+
+Nana panel specialization to display small visible scrollable part of the panel
+
+The scrolled panel is large and mostly hidden.  The widgets are placed on this panel.
+
+The visible panel is small and transparent, allows user to see a small part of the scrolled panel.
+
+The visible panel is surrounded by scroll bars which control what part of scrolled panel is seen.
+
+The visible panel and scroll bars are constructed automatically, to the dimensions specifed in the scrolled panel constructor
+    
+### Files:
+
+panel_scrolled/panel_scrolled.h  Needs header only, include in source file where referenced
+
+panel_scrolled/demos/* - demo application code
+    
+<img src="https://github.com/besh81/nana-extra/blob/master/screenshots/panel_scrolled.png" alt="panel_scrolled"></a>

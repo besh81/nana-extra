@@ -1,4 +1,5 @@
-#include "iostream"
+#include <iostream>
+#include <algorithm>
 #include <nana/gui.hpp>
 #include "plot2d.h"
 namespace nana
@@ -14,11 +15,11 @@ plot::plot( window parent )
     myAxis = new axis( this );
 }
 
-trace& plot::AddPointTrace()
+trace& plot::AddScatterTrace()
 {
     trace * t = new trace();
     t->Plot( this );
-    t->points();
+    t->scatter();
     myTrace.push_back( t );
     return *t;
 }
@@ -67,7 +68,7 @@ void plot::CalcScale( int w, int h )
     {
         if( t->size() > maxCount )
             maxCount = t->size();
-        int tmin, tmax;
+        double tmin, tmax;
         t->bounds( tmin, tmax );
         if( tmin < myMinY )
             myMinY = tmin;
@@ -83,16 +84,15 @@ void plot::CalcScale( int w, int h )
         myScale = 0.9 * h / ( myMaxY - myMinY );
     myXOffset = 0.05 * w;
     myYOffset = h + myScale * myMinY;
+
+    //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
 }
 void trace::set( const std::vector< double >& y )
 {
     if( myType != eType::plot )
         throw std::runtime_error("nanaplot error: plot data added to non plot trace");
 
-    myY.clear();
-    for( double s : y )
-        myY.push_back( s );
-    //myY = y;
+    myY = y;
 
     std::cout << "plot::trace::set " << myY.size() << "\n";
 }
@@ -109,27 +109,19 @@ void trace::add( double y )
 
 void trace::add( double x, double y )
 {
-    if( myType != eType::point )
-        throw std::runtime_error("nanaplot error: point data added to non point type trace");
+    if( myType != eType::scatter )
+        throw std::runtime_error("nanaplot error: point data added to non scatter type trace");
     myX.push_back( x );
     myY.push_back( y );
 }
 
-void trace::bounds( int& tmin, int& tmax )
+void trace::bounds( double& tmin, double& tmax )
 {
-    if( ! myY.size() )
-        return;
-    tmin = myY[0];
-    tmax = tmin;
-    for( auto y : myY )
-    {
-        if( y < tmin )
-            tmin = y;
-        if( y > tmax )
-            tmax = y;
-    }
-    tmin--;
-    tmax++;
+    auto result = std::minmax_element(
+                      myY.begin(),
+                      myY.end());
+    tmin = *result.first;
+    tmax = *result.second;
 }
 
 void trace::update( paint::graphics& graph )
@@ -137,8 +129,6 @@ void trace::update( paint::graphics& graph )
     bool first = true;
     float x    = myPlot->XOffset();
     float xinc = myPlot->xinc();
-    double s   = myPlot->Scale();
-    int yOffset = myPlot->YOffset();
     double prev;
 
 
@@ -171,11 +161,11 @@ void trace::update( paint::graphics& graph )
         }
         break;
 
-    case eType::point:
+    case eType::scatter:
 
-        for( int k = 0; k < myX.size(); k++ )
+        for( int k = 0; k < (int)myX.size(); k++ )
         {
-            double x = myPlot->XOffset() + xinc * myX[k];
+            int x = (int) ( myPlot->XOffset() + xinc * myX[k] );
             graph.rectangle(
                 rectangle{ x-5,  myPlot->Y2Pixel( myY[ k ] )-5,
                            10, 10 },
@@ -231,37 +221,74 @@ void trace::update( paint::graphics& graph )
 
 axis::axis( plot * p )
     : myPlot( p )
+    , myfGrid( false )
 {
-    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 30, 15 } );
+    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
     myLabelMin->caption("test");
-    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 30, 15 } );
+    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
     myLabelMax->caption("test");
+    myLabelZero = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
+    myLabelZero->caption("0.0");
 }
 
 void axis::update( paint::graphics& graph )
 {
-    int mn = 10 * ( myPlot->minY() / 10 );
+    double mn = 10 * ( myPlot->minY() / 10 );
+    double mx = 10 * ( myPlot->maxY() / 10 );
+    if( mx-mn < 2 )
+    {
+        mn = myPlot->minY();
+        mx = myPlot->maxY();
+    }
     int ymn_px = myPlot->Y2Pixel( mn );
     myLabelMin->caption(std::to_string(mn));
     myLabelMin->move( 5,  ymn_px );
 
-    int mx = 10 * ( myPlot->maxY() / 10 );
     int ymx_px = myPlot->Y2Pixel( mx );
     myLabelMax->caption(std::to_string( mx ));
     myLabelMax->move( 5,   ymx_px - 15 );
-
 
     graph.line( point( 2, ymn_px ),
                 point( 2, ymx_px ),
                 colors::black );
 
-    int yinc = ( ymn_px - ymx_px ) / 4;
-    for( int ky = 0; ky < 4; ky++ )
+    if( mn * mx < 0 )
     {
-        int y = ymx_px + ky * yinc;
-        graph.line( point(2, y),
-                    point(5, y),
+        graph.line( point(2, ymx_px),
+                    point(5, ymx_px),
                     colors::black );
+        int y0_px = myPlot->Y2Pixel( 0 );
+        myLabelZero->move( 5,   y0_px - 15 );
+        myLabelZero->show();
+        graph.line( point(2, y0_px),
+                    point(5, y0_px),
+                    colors::black );
+        graph.line( point(2, ymn_px),
+                    point(5, ymn_px),
+                    colors::black );
+        if( myfGrid )
+            for( int k=5; k<graph.width(); k=k+10 ) {
+                graph.set_pixel(k, y0_px, colors::blue );
+                graph.set_pixel(k+1, y0_px, colors::blue );
+            }
+    }
+    else
+    {
+        myLabelZero->hide();
+        int yinc = ( ymn_px - ymx_px ) / 4;
+        for( int ky = 0; ky < 4; ky++ )
+        {
+            int y = ymx_px + ky * yinc;
+            graph.line( point(2, y),
+                        point(5, y),
+                        colors::black );
+            if( myfGrid )
+                for( int k=5; k<graph.width(); k=k+10 )
+                {
+                    graph.set_pixel(k, y, colors::blue );
+                    graph.set_pixel(k+1, y, colors::blue );
+                }
+        }
     }
 }
 

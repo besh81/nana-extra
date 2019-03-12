@@ -13,6 +13,7 @@ int main()
 
         // construct plot to be drawn on form
         plot::plot thePlot( fm );
+        thePlot.Grid( true );
 
         // construct plot traces
         plot::trace& t1 = thePlot.AddStaticTrace();
