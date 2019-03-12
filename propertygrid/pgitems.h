@@ -173,6 +173,8 @@ namespace nana
 
 		virtual void tooltip( const std::string& help_text );      ///< Provide pop-up help string
 
+		virtual void set( const std::vector< std::string >& vs ); ///< set options to be chosen from
+
 	protected:
 		virtual void create(window wd) override;
 

@@ -460,6 +460,14 @@ namespace nana
         cmb_.tooltip( help_text );
     }
 
+    void pg_choice::set( const std::vector< std::string >& vs )
+    {
+        for( auto& s : vs )
+        {
+            cmb_.push_back( s );
+        }
+    }
+
 	void pg_choice::create(window wd)
 	{
 		cmb_.create(wd);

@@ -147,6 +147,11 @@ namespace nana
 				    // nothing to be done for the base class
 				}
 
+				virtual void set( const std::vector< std::string >& vs )
+				{
+				    // nothing to be done for the base class
+				}
+
 				virtual void typeface_changed(unsigned text_height)	///< Inform the item the font is changed (should not be used)
 				{
 					size_ = text_height + 10;
@@ -255,10 +260,27 @@ namespace nana
 
                 <pre>
                     auto cat = pg.append("A category");
-                    cat.append(ptr(new nana::pg_choice("A property")))->tooltip( "A helpful hint" );
+                    cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))->tooltip( "A helpful hint" );
                 </pre>
                 */
                 item_proxy& tooltip( const std::string& help_text );
+
+                /** \brief Set a vector of strings in the item
+
+                @param[in] vs vector of stings to set in item
+
+                This is used by the choice property to set the available options in the drop down.
+                Other property types just ignore it.
+
+                Example Usage:
+
+                <pre>
+                    auto cat = pg.append("A category");
+                    auto ip  = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))
+                    ip->set({ "A", "B", "C", "D" });
+                </pre>
+                */
+                item_proxy& set( const std::vector< std::string >& vs );
 
 				// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;
