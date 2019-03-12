@@ -142,6 +142,11 @@ namespace nana
 					return size_;
 				}
 
+				virtual void tooltip( const std::string& help_text )
+				{
+				    // nothing to be done for the base class
+				}
+
 				virtual void typeface_changed(unsigned text_height)	///< Inform the item the font is changed (should not be used)
 				{
 					size_ = text_height + 10;
@@ -241,6 +246,8 @@ namespace nana
 
 				bool enabled();				///< Get the enables state of the item
 				void enabled(bool state);	///< Enables/disables the item
+
+                item_proxy& tooltip( const std::string& help_text );    ///< Set item's tooltip
 
 				// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;

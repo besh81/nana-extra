@@ -1234,6 +1234,23 @@ namespace nana
 			{
 				_m_property().enabled(state);
 			}
+            /** \brief Provide help in pop-up when mouse hovers over property's value entry field
+
+                @param[in] help_text
+
+                Example Usage:
+
+                <pre>
+                    auto cat = pg.append("A category");
+                    ip = cat.append(ptr(new nana::pg_choice("A property")))->tooltip( "A helpful hint" );
+                </pre>
+            */
+            item_proxy& item_proxy::tooltip( const std::string& help_text )
+			{
+				_m_property().tooltip( help_text );
+
+				return *this;
+			}
 
 			auto item_proxy::_m_property() const -> pgitem&
 			{

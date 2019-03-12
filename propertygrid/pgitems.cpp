@@ -122,6 +122,10 @@ namespace nana
 	{
 		return txt_.editable();
 	}
+    void pg_string::tooltip( const std::string& help_text )
+    {
+        txt_.tooltip( help_text );
+    }
 
 	void pg_string::create(window wd)
 	{
@@ -356,6 +360,10 @@ namespace nana
 	{
 		return txt_.editable();
 	}
+    void pg_string_button::tooltip( const std::string& help_text )
+    {
+        txt_.tooltip( help_text );
+    }
 
 	void pg_string_button::create(window wd)
 	{
@@ -447,6 +455,11 @@ namespace nana
 		cmb_.push_back(option);
 	}
 
+    void pg_choice::tooltip( const std::string& help_text )
+    {
+        cmb_.tooltip( help_text );
+    }
+
 	void pg_choice::create(window wd)
 	{
 		cmb_.create(wd);
@@ -494,6 +507,10 @@ namespace nana
 		pgitem::enabled(state);
 		chk_.enabled(en_);
 	}
+    void pg_check::tooltip( const std::string& help_text )
+    {
+        chk_.tooltip( help_text );
+    }
 
 	void pg_check::create(window wd)
 	{
