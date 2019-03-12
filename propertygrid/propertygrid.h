@@ -247,7 +247,18 @@ namespace nana
 				bool enabled();				///< Get the enables state of the item
 				void enabled(bool state);	///< Enables/disables the item
 
-                item_proxy& tooltip( const std::string& help_text );    ///< Set item's tooltip
+                /** \brief Provide help in pop-up when mouse hovers over property's value entry field
+
+                @param[in] help_text
+
+                Example Usage:
+
+                <pre>
+                    auto cat = pg.append("A category");
+                    cat.append(ptr(new nana::pg_choice("A property")))->tooltip( "A helpful hint" );
+                </pre>
+                */
+                item_proxy& tooltip( const std::string& help_text );
 
 				// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;
