@@ -1580,12 +1580,19 @@ namespace nana
 		return npos;
 	}
 
-	propertygrid::item_proxy propertygrid::find(
-	    const std::string& catName,
-	    const std::string& propName ) const
-	{
-	    return at( find( catName )).find(propName);
-	}
+    propertygrid::item_proxy propertygrid::find(
+        const std::string& catName,
+        const std::string& propName ) const
+    {
+        try
+        {
+            return at( find( catName )).find(propName);
+        }
+        catch( std::out_of_range& e )
+        {
+            throw std::runtime_error( "Cannot find property" + propName + " in category" + catName );
+        }
+    }
 
 	propertygrid::item_proxy propertygrid::at(const index_pair& idx) const
 	{

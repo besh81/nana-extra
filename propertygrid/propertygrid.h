@@ -429,7 +429,12 @@ namespace nana
 
 		item_proxy at(const index_pair& idx) const;		///< Returns an item by the specified absolute position
 
-		item_proxy find(								///< Returns an item of specified label in specified category name
+		/** \brief Find a property by name and category name
+            \param[in] catName
+            \param[in] propName
+            \throw runtime_error if property does not exist
+        */
+		item_proxy find(
 		           const std::string& catName,
                    const std::string& propName ) const;
 
