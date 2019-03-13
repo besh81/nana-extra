@@ -411,14 +411,27 @@ namespace nana
 
 
 	/// class pg_choice
-	void pg_choice::value(const std::string& value_)
+
+	/** \brief Select one of the options
+        \param[in] new_option_index index of option to be selected, 0-based integer in string format
+
+        If index is out of range for the number of available options, it is ignored
+        If index is badly formatted ( not a number ), the first option will be selected
+
+        Usage example:
+
+        value( "0" );    /// make first option selected
+
+	*/
+	void pg_choice::value(const std::string& new_option_index )
 	{
 		try
 		{
-			option(std::stoul(pgitem::value()));
+			option(std::stoul( new_option_index ) );
 		}
 		catch(...)
 		{
+		    // ignore out of range option index
 		}
 	}
 
