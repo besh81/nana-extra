@@ -99,7 +99,7 @@ namespace nana
 	{
 		internal_lock_guard evt_lock(&evt_emit_, false);
 		txt_.caption(value);
-		
+
 		pgitem::value(value);
 	}
 
@@ -122,6 +122,10 @@ namespace nana
 	{
 		return txt_.editable();
 	}
+    void pg_string::tooltip( const std::string& help_text )
+    {
+        txt_.tooltip( help_text );
+    }
 
 	void pg_string::create(window wd)
 	{
@@ -145,6 +149,18 @@ namespace nana
 				emit_event();
 			}
 		});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+		        if( !arg.getting )
+		        {
+		            // just lost focus, so capture the value left by the user, if changed
+		            if( txt_.caption() != pgitem::value() )
+		            {
+		                pgitem::value( txt_.caption() );
+		                emit_event();
+		            }
+		        }
+    	});
 	}
 
 	void pg_string::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -216,6 +232,19 @@ namespace nana
 				arg.stop_propagation();
 			}
 		});
+
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+		        if( !arg.getting )
+		        {
+		            // just lost focus, so capture the value left by the user, if changed
+		            if( txt_.caption() != pgitem::value() )
+		            {
+		                pgitem::value( txt_.caption() );
+		                emit_event();
+		            }
+		        }
+   		 });
 
 		txt_.set_accept([](wchar_t c) -> bool
 		{
@@ -331,6 +360,10 @@ namespace nana
 	{
 		return txt_.editable();
 	}
+    void pg_string_button::tooltip( const std::string& help_text )
+    {
+        txt_.tooltip( help_text );
+    }
 
 	void pg_string_button::create(window wd)
 	{
@@ -422,6 +455,19 @@ namespace nana
 		cmb_.push_back(option);
 	}
 
+    void pg_choice::tooltip( const std::string& help_text )
+    {
+        cmb_.tooltip( help_text );
+    }
+
+    void pg_choice::set( const std::vector< std::string >& vs )
+    {
+        for( auto& s : vs )
+        {
+            cmb_.push_back( s );
+        }
+    }
+
 	void pg_choice::create(window wd)
 	{
 		cmb_.create(wd);
@@ -469,6 +515,10 @@ namespace nana
 		pgitem::enabled(state);
 		chk_.enabled(en_);
 	}
+    void pg_check::tooltip( const std::string& help_text )
+    {
+        chk_.tooltip( help_text );
+    }
 
 	void pg_check::create(window wd)
 	{
@@ -658,7 +708,7 @@ namespace nana
 		for(auto & i : rgb_)
 			API::show_window(i, true);
 
-		
+
 		// colorbox R G B
 		int availw = labelw + valuew;
 		if(availw)

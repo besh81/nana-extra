@@ -1206,6 +1206,10 @@ namespace nana
 				_m_ess()->update();
 				return *this;
 			}
+			item_proxy& item_proxy::operator=(const std::string& new_value_string )
+			{
+			    return value( new_value_string, false );
+			}
 			std::string item_proxy::value() const
 			{
 				return _m_property().value();
@@ -1229,6 +1233,20 @@ namespace nana
 			void item_proxy::enabled(bool state)
 			{
 				_m_property().enabled(state);
+			}
+
+            item_proxy& item_proxy::tooltip( const std::string& help_text )
+			{
+				_m_property().tooltip( help_text );
+
+				return *this;
+			}
+
+			item_proxy& item_proxy::set( const std::vector< std::string >& vs )
+			{
+			    _m_property().set( vs );
+
+			    return *this;
 			}
 
 			auto item_proxy::_m_property() const -> pgitem&
@@ -1297,6 +1315,12 @@ namespace nana
 				return cat_->text;
 			}
 
+			void cat_proxy::expand( bool exp )
+			{
+			    cat_->expand = exp;
+			}
+
+
 			//Behavior of a container
 			item_proxy cat_proxy::begin() const
 			{
@@ -1342,6 +1366,19 @@ namespace nana
 			std::size_t cat_proxy::size() const
 			{
 				return cat_->items.size();
+			}
+
+			item_proxy cat_proxy::find( const std::string& prop_name )
+			{
+			    size_t pos = 0;
+			    for( auto& i : *this )
+			    {
+			        if( i.label() == prop_name ) {
+			            break;
+			        }
+			        pos++;
+			    }
+			    return item_proxy(ess_, index_pair(pos_, pos));
 			}
 
 			// Behavior of Iterator
@@ -1542,6 +1579,20 @@ namespace nana
 		}
 		return npos;
 	}
+
+    propertygrid::item_proxy propertygrid::find(
+        const std::string& catName,
+        const std::string& propName ) const
+    {
+        try
+        {
+            return at( find( catName )).find(propName);
+        }
+        catch( std::out_of_range& e )
+        {
+            throw std::runtime_error( "Cannot find property" + propName + " in category" + catName );
+        }
+    }
 
 	propertygrid::item_proxy propertygrid::at(const index_pair& idx) const
 	{
