@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+	<title>Extended progress widget documentation</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="progress_ex.css" media="all">
+</head>
+
+<body>
+<div id="page">
+<div id="content">
+
+<div class="content-block">
+<h2>Extended progress widget</h2>
+<p>
+<code>progress_ex</code> is a simple extension of the <code>nana::progress</code> class, adding text to the widget and a few color presets. It modifies none of the existing behavior of the base class, and is constructed and used in exactly the same way. By default, the widget looks no different than a regular <code>nana::progress</code> widget.
+</p>
+<img class="centered-pic" src="progress_ex.png" alt="demo screenshot" width="449" height="496">
+</div>
+
+<div class="content-block">
+<h2>Text modes</h2>
+<p>In order to display text, <code>progress_ex::text_mode()</code> must be called with one of the following arguments:</p>
+<ul>
+	<li><code>progress_ex::text_modes::percentage</code><p>Displays what percentage <code>progress::value()</code> is out of <code>progress::amount()</code>. Only works if the progress widget is not in "unknown" mode.</p></li>
+	<li><code>progress_ex::text_modes::value</code><p>Displays <code>progress::value()</code> out of <code>progress::amount()</code>. This is useful to indicate overall progress when a list of items is being processed, for example. Only works if the progress widget is not in "unknown" mode.</p></li>
+	<li><code>progress_ex::text_modes::caption</code><p>Displays the text that you set by calling <code>progress_ex::caption()</code>. This also works if the progress widget is in "unknown" mode, but without text contrast (see below).</p></li>
+</ul>
+<p>If you want the widget to stop displaying text, just set the text mode to <code>caption</code> and set the caption to an empty string.</p>
+</div>
+
+<div class="content-block">
+<h2>Text contrast</h2>
+<p>By default, the text intersecting with the "full" part of the widget (the progress bar) is displayed with one color, and the text intersecting with the "empty" part (the background) is displayed with a different color. Each of these two colors is meant to contrast with the part of the widget that they intesect with, to improve legibility. They can be changed by calling <code>void text_contrast_colors(nana::color full, nana::color empty)</code>.</p>
+<p>If this behavior is not desired, you can disable it by calling <code>void text_contrast(bool enable)</code> with a <code>false</code> argument. The regular, "no contrast" text color can be changed by calling <code>void text_color(nana::color)</code>.</p>
+</div>
+
+<div class="content-block">
+<h2>Color presets for the progress bar</h2>
+<p>As you probably know, <code>nana::progress</code> allows you to change the progress bar and background colors using the widget scheme. In addition to that, <code>progress_ex</code> provides a few color presets that you can apply by calling <code>color_preset(color_presets preset, double shade = 0)</code>.</p>
+<p>The first argument can be any of the <code>progress_ex::color_presets</code> enumerated values, which are: <code>{ nana, blue, green, orange, violet, brown }</code>.</p>
+<p>The second argument modifies the shade of the colors, and should be in the range of -1.0 to 1.0, although effective values are probably from -0.4 to 0.4. Negative values produce darker shades, zero means no change, and positive values produce lighter shades.</p>
+</div>
+
+</div> <!--content-->
+</div> <!--page-->
+
+</body>
+</html>
