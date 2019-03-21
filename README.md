@@ -57,3 +57,8 @@ panel_scrolled/panel_scrolled.h  Needs header only, include in source file where
 panel_scrolled/demos/* - demo application code
     
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/panel_scrolled.png" alt="panel_scrolled"></a>
+
+## progress_ex
+
+`progress_ex` is a simple extension of the `nana::progress` class, adding text to the widget and a few color presets. It modifies none of the existing behavior of the base class, and is constructed and used in exactly the same way.
+![progress_ex demo screenshot](https://github.com/ErrorFlynn/nana-extra/blob/master/screenshots/progress_ex.png)
