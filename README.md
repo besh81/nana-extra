@@ -5,11 +5,14 @@ A collection of [Nana C++ Library](https://github.com/cnjinhao/nana) custom cont
 
 
 ## [propertygrid](https://github.com/besh81/nana-extra/wiki/propertygrid)
+**Author: besh81**
+
 A specialized grid for editing properties. It comes with a list of ready-to-use property classes include strings, numbers, flag sets, colors and many others.
 
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/propertygrid.png" alt="propertygrid" height="450"></a>
 
 ## [plot2d](https://github.com/besh81/nana-extra/wiki/plot2d)
+**Author: [JamesBremner](https://github.com/JamesBremner)**
 
 A 2D plotting widget for the nana library.
 
@@ -39,6 +42,7 @@ plot2d/demos/spline/* - spline curve demo application
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/SplineCurve.PNG" alt="plot2d"></a>
 
 ## panel_scrolled
+**Author: [JamesBremner](https://github.com/JamesBremner)**
 
 Nana panel specialization to display small visible scrollable part of the panel
 
@@ -59,6 +63,7 @@ panel_scrolled/demos/* - demo application code
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/panel_scrolled.png" alt="panel_scrolled"></a>
 
 ## progress_ex
+**Author: [ErrorFlynn](https://github.com/ErrorFlynn)**
 
 `progress_ex` is a simple extension of the `nana::progress` class, adding text to the widget and a few color presets. It modifies none of the existing behavior of the base class, and is constructed and used in exactly the same way. For details, please see the **[documentation](https://besh81.github.io/nana-extra/progress_ex/progress_ex.html)**.
 
