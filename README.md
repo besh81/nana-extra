@@ -60,5 +60,6 @@ panel_scrolled/demos/* - demo application code
 
 ## progress_ex
 
-`progress_ex` is a simple extension of the `nana::progress` class, adding text to the widget and a few color presets. It modifies none of the existing behavior of the base class, and is constructed and used in exactly the same way.
-![progress_ex demo screenshot](https://github.com/ErrorFlynn/nana-extra/blob/master/screenshots/progress_ex.png)
+`progress_ex` is a simple extension of the `nana::progress` class, adding text to the widget and a few color presets. It modifies none of the existing behavior of the base class, and is constructed and used in exactly the same way. For details, please see the **[documentation](https://besh81.github.io/nana-extra/progress_ex/progress_ex.html)**.
+
+![progress_ex demo screenshot](https://raw.githubusercontent.com/besh81/nana-extra/master/screenshots/progress_ex.png)
