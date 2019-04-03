@@ -11,20 +11,25 @@ int main()
     form fm( 0, nana::size{ 600, 500 } );
 
     cPropGrid pg( fm );
-    pg.Add("Strings");
-    pg.Add( "test1", "1" );
-    pg.Add( "test2", "2" );
-    pg.Add( "test3", "3" );
-    pg.Add("Bools");
-    pg.AddCheck( "test4", false );
-    pg.AddCheck( "test5", true );
-    pg.Add("cat");
-    pg.Add( "test6", "false" );
-    pg.AddCheck( "test7", true );
+    pg.category( "Strings" );
+    pg.string( "test1", "1" )->tooltip( "helpful description" );
+    pg.string( "test2", "2" );
+    pg.string( "test3", "3" );
+
+    pg.category( "Bools" );
+    pg.check( "test4", false );
+    pg.check( "test5", true );
+
+    pg.category("cat");
+    pg.string( "test6", "false" );
+    pg.check( "test7", true );
+
+    pg.category( "choices" );
+    pg.choice( "Select ", {"A","B","C"});
 
     pg.Collapse("Bools");
 
-    pg.SetChangeFunction([]( cProp& prop )
+    pg.change_event([]( cProp& prop )
     {
         std::cout
             << "Property "  << prop.Name()

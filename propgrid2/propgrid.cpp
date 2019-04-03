@@ -25,19 +25,18 @@ cProp::cProp( cPropGrid& grid,
     , myValue( value )
     , myValueBool( bvalue )
     , myIndex( myGrid.size() )
-    , myType( eType::string )
 {
     PanelLabel();
     if( myValue.length() )
     {
-        myTextbox->move({1+myGrid.propWidth()/2,1, -1+myGrid.propWidth()/2,myGrid.propHeight()-2});
+        myTextbox->move({1+myGrid.propWidth()/2,1, -3+myGrid.propWidth()/2,myGrid.propHeight()-2});
         myTextbox->caption( myValue );
         myTextbox->events().mouse_leave([this]
         {
             if( myTextbox->caption() != myValue )
             {
                 myValue = myTextbox->caption();
-                myGrid.ChangeFunction()( *this );
+                myGrid.ChangeEventFunction()( *this );
             }
         });
         myType = eType::string;
@@ -49,17 +48,10 @@ cProp::cProp( cPropGrid& grid,
         myCheckbox->events().click([this]
         {
             myValueBool = myCheckbox->checked();
-            myGrid.ChangeFunction()( *this );
+            myGrid.ChangeEventFunction()( *this );
         });
         myType = eType::check;
     }
-    nana::drawing dw{*myPanel};
-    dw.draw([this](paint::graphics& graph)
-    {
-        int w = -1 + myGrid.propWidth()/2;
-        graph.line( {0,21}, {w,21},colors::black);
-        graph.line( {w,0}, {w,21},colors::black);
-    });
 }
 
 cProp::cProp( cPropGrid& grid,
@@ -73,10 +65,10 @@ cProp::cProp( cPropGrid& grid,
     , myType( eType::category )
 {
     int h = myGrid.propHeight();
-    myPanel->move({ 0, (h * myIndex), myGrid.propWidth(), h });
-    myLabel->move({ 20,1, myGrid.propWidth()/2,h-2 });
+    myPanel->move({ 0, (h * myIndex), myGrid.propWidth(), 2 * h });
+    myLabel->move({ 20, h/2, myGrid.propWidth()/2,h-2 });
     myLabel->caption( myName );
-    myCheckbox->move( {1,1,14,myGrid.propHeight()-2} );
+    myCheckbox->move( {1,h/2, 14,myGrid.propHeight()-2} );
     myCheckbox->check( true );
     myCheckbox->events().click([this]
     {
@@ -85,9 +77,11 @@ cProp::cProp( cPropGrid& grid,
     nana::drawing dw{*myPanel};
     dw.draw([this](paint::graphics& graph)
     {
+        int h = 2 * myGrid.propHeight() - 1;
         int w = -1 + myGrid.propWidth();
-        graph.line( {0,21}, {w,21},colors::black);
-        graph.line( {w,0}, {w,21},colors::black);
+        graph.line( {0,h}, {w,h},colors::black);
+        graph.line( {w-1,0}, {w-1,h},colors::black);
+        graph.line( {w,0}, {w,h},colors::black);
     });
 }
 
@@ -112,7 +106,7 @@ cProp::cProp(
     myCombox->events().text_changed([this]
     {
         myValue = myCombox->caption();
-        myGrid.ChangeFunction()( *this );
+        myGrid.ChangeEventFunction()( *this );
     });
 }
 
@@ -121,6 +115,15 @@ void cProp::PanelLabel()
     myPanel->move({ 0, (myGrid.propHeight() * myIndex),    myGrid.propWidth(), myGrid.propHeight() });
     myLabel->move({ 1,1,                                   myGrid.propWidth()/2, myGrid.propHeight()-2 });
     myLabel->caption( myName );
+        nana::drawing dw{*myPanel};
+    dw.draw([this](paint::graphics& graph)
+    {
+        int h = myGrid.propHeight()-1;
+        int w = -1 + myGrid.propWidth();
+        graph.line( {0,h}, {w,h},colors::black);
+        graph.line( {w-1,0}, {w-1,h},colors::black);
+        graph.line( {w,0}, {w,h},colors::black);
+    });
 }
 
 void cProp::Show( bool f )
@@ -144,6 +147,11 @@ void cProp::Show( bool f )
         myCheckbox->hide();
     }
 }
+
+    void cProp::tooltip( const std::string& msg )
+    {
+        myLabel->tooltip( msg );
+    }
 
 void cPropGrid::Expand( const std::string& name, bool f )
 {
@@ -181,9 +189,10 @@ void cPropGrid::CollapseAll()
             p->Show( true );
             fexp = p->IsExpanded();
             index++;
-            p->move( { 0, (22 * index),
-                       propWidth(), 22
+            p->move( { 0, propHeight() * index,
+                       propWidth(), 2*propHeight()
                      });
+            index++;
         }
         else
         {
@@ -191,7 +200,8 @@ void cPropGrid::CollapseAll()
             if( fexp )
             {
                 index++;
-                p->move( { 0, (22 * index), propWidth(), 22 });
+                p->move( { 0, (propHeight() * index),
+                        propWidth(), propHeight() });
             }
             else
             {

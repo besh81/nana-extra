@@ -71,6 +71,8 @@ public:
     */
     void Show( bool f );
 
+    void tooltip( const std::string& msg );
+
 private:
     cPropGrid& myGrid;
     nana::panel<true> * myPanel;
@@ -96,6 +98,8 @@ private:
 };
 class cPropGrid
 {
+    friend cProp;
+
 public:
     cPropGrid( nana::form& fm )
         : myfm( fm )
@@ -111,7 +115,7 @@ public:
         @param[in] name
         @param[in] value
     */
-    void Add( const std::string& name,
+    cProp* string( const std::string& name,
               const std::string& value )
     {
         myProp.emplace_back( new cProp(
@@ -119,12 +123,13 @@ public:
                                  name,
                                  value,
                                  false ) );
+        return myProp.back();
     }
     /** Add checkbox property
         @param[in] name
         @param[in] value
     */
-    void AddCheck( const std::string& name,
+    void check( const std::string& name,
                    bool value )
     {
         myProp.emplace_back( new cProp(
@@ -136,15 +141,18 @@ public:
     /** Add category
         @param[in] name
     */
-    void Add( const std::string& name )
+    void category( const std::string& name )
     {
         myProp.emplace_back( new cProp(
                                  *this,
                                  name ) );
         myCurCatName = name;
     }
-
-    void AddChoice(
+    /** Add choice property
+        \param[in] name
+        \param[in] vChoice vector of possible choices
+    */
+    void choice(
         const std::string name,
         const std::vector< std::string >& vChoice )
     {
@@ -169,36 +177,64 @@ public:
     {
         return 22;
     }
-    /** Function called wnen changed property loses focus
-        @pram[in] f function to be called
+    /** Register function to be called wnen property changes value
+            \param[in] f function to be called
+
+        Function signature: void f( cProp* prop )
+
+        Usage:
+
+    <pre>
+            cPropGrid pg( fm );
+            pg.change_event([]( cProp& prop )
+            {
+            std::cout
+                << "Property "  << prop.Name()
+                << " in "       << prop.CatName()
+                << " value is " << prop.Value()
+                << "\n";
+            });
+    </pre>
+
     */
-    void SetChangeFunction( std::function<void( cProp& prop )> f)
+    void change_event( std::function<void( cProp& prop )> f)
     {
-        myf = f;
+        myChangeEventFunction = f;
     }
-    std::function<void( cProp& prop )> ChangeFunction()
-    {
-        return myf;
-    }
+
     /// Number of properties in grid of all types including categories
     int size()
     {
         return (int) myProp.size();
     }
 
-    /// Last category name. ( Properties added wil be included in this category )
+private:
+
+    nana::form& myfm;
+    std::vector< cProp* > myProp;
+    std::function<void( cProp& prop )> myChangeEventFunction;
+    std::string myCurCatName;
+
+    /// Move visible properties to required screen locations when categories expand or collapse
+    void CollapseAll();
+
+    /** get change event function
+
+        \return function to be called when property value changes
+
+    A property will call this when its values is changed by the user
+    in order to invoke the stored change event function
+    */
+    std::function<void( cProp& prop )> ChangeEventFunction()
+    {
+        return myChangeEventFunction;
+    }
+
+    /// Last category name. ( Properties added will be included in this category )
     std::string LastCatName() const
     {
         return myCurCatName;
     }
-
-private:
-    nana::form& myfm;
-    std::vector< cProp* > myProp;
-    std::function<void( cProp& prop )> myf;
-    std::string myCurCatName;
-
-    void CollapseAll();
 };
 
 }
