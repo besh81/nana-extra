@@ -152,10 +152,17 @@ void cProp::PanelLabel()
     });
 }
 
-void cProp::Show( bool f )
+void cProp::visible( bool& f, int& index )
 {
     if( IsCategory() )
+    {
+        myPanel->move( { 0, myGrid.propHeight() * index,
+                         myGrid.propWidth(), 2*myGrid.propHeight()
+                       });
+        index += 2;
+        f = IsExpanded();
         return;
+    }
     if( f )
     {
         myLabel->show();
@@ -171,6 +178,10 @@ void cProp::Show( bool f )
             myCombox->show();
             break;
         }
+        myPanel->move( { 0, myGrid.propHeight() * index,
+                         myGrid.propWidth(), myGrid.propHeight()
+                       });
+        index++;
     }
     else
     {
@@ -187,6 +198,7 @@ void cProp::Show( bool f )
             myCombox->hide();
             break;
         }
+        myPanel->move( { 0,0,0,0 });
     }
 }
 
@@ -213,7 +225,7 @@ void cPropGrid::Expand( const std::string& name, bool f )
                 return;
             p->Expand( f );
         }
-    CollapseAll();
+    visible();
 }
 
 void cPropGrid::Collapse( const std::string& name )
@@ -225,41 +237,16 @@ void cPropGrid::Collapse( const std::string& name )
                 return;
             p->Expand( false );
         }
-    CollapseAll();
+    visible();
 }
 
-void cPropGrid::CollapseAll()
+void cPropGrid::visible()
 {
-
     bool fexp = true;
-    int index = -1;
+    int index = 0;
     for( auto p : myProp )
     {
-        if( p->IsCategory() )
-        {
-            p->Show( true );
-            fexp = p->IsExpanded();
-            index++;
-            p->move( { 0, propHeight() * index,
-                       propWidth(), 2*propHeight()
-                     });
-            index++;
-        }
-        else
-        {
-            p->Show( fexp );
-            if( fexp )
-            {
-                index++;
-                p->move( { 0, (propHeight() * index),
-                           propWidth(), propHeight()
-                         });
-            }
-            else
-            {
-                p->move( { 0,0,0,0 });
-            }
-        }
+        p->visible( fexp, index );
     }
 }
 

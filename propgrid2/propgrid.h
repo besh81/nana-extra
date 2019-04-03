@@ -31,16 +31,6 @@ public:
         delete myLabel;
         delete myPanel;
     }
-
-    void move( const nana::rectangle& r )
-    {
-        myPanel->move( r );
-    }
-
-    bool operator==(const cProp& other) const
-    {
-        return myName == other.myName;
-    }
     bool IsCategory()
     {
         return myType == eType::category;
@@ -77,8 +67,11 @@ public:
     }
     /** Show property when category is expanded or collapsed
         \param[in] f true to show, false to hide
+        \param[out] f true if expanded category
+        \param[in] index of preceding visible properties
+        \param[out] index incremented index
     */
-    void Show( bool f );
+    void visible( bool& f, int& index );
 
     /** Add helpful description that pops up when mouse hovers over property name
         \param[in] msg to pop up
@@ -255,7 +248,7 @@ private:
     std::string myCurCatName;
 
     /// Move visible properties to required screen locations when categories expand or collapse
-    void CollapseAll();
+    void visible();
 
     /** get change event function
 
