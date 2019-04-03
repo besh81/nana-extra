@@ -66,8 +66,10 @@ cProp::cProp( cPropGrid& grid,
 {
     int h = myGrid.propHeight();
     myPanel->move({ 0, (h * myIndex), myGrid.propWidth(), 2 * h });
-    myLabel->move({ 20, h/2, myGrid.propWidth()/2,h-2 });
+    myLabel->move({ 20, 3, myGrid.propWidth()/2,2*h-4 });
     myLabel->caption( myName );
+    myLabel->fgcolor( colors::blue );
+    myLabel->typeface( paint::font( "Segoe UI", 14 ) );
     myCheckbox->move( {1,h/2, 14,myGrid.propHeight()-2} );
     myCheckbox->check( true );
     myCheckbox->events().click([this]
@@ -149,8 +151,18 @@ void cProp::Show( bool f )
     else
     {
         myLabel->hide();
-        myTextbox->hide();
-        myCheckbox->hide();
+        switch( myType )
+        {
+        case eType::string:
+            myTextbox->hide();
+            break;
+        case eType::check:
+            myCheckbox->hide();
+            break;
+        case eType::choice:
+            myCombox->hide();
+            break;
+        }
     }
 }
 
