@@ -87,6 +87,7 @@ namespace nana
 
 				pgitem(const std::string& label, const std::string& value = "")	///< Constructor
 					: label_(label), value_(value), def_(value)
+					, ibox_show_( true )
 				{}
 
 				void init(window wd);							///< Initialize the inline controls (should not be used)
@@ -152,6 +153,14 @@ namespace nana
 				    // nothing to be done for the base class
 				}
 
+				/** \brief Show or Hide the "interactive box"
+                    @param[in] f true if you want to see the interactive box
+                */
+				void iboxShow( bool f )
+				{
+				    ibox_show_ = f;
+				}
+
 				virtual void typeface_changed(unsigned text_height)	///< Inform the item the font is changed (should not be used)
 				{
 					size_ = text_height + 10;
@@ -188,6 +197,7 @@ namespace nana
 				essence_t*		ess_;
 				index_pair		idx_;
 
+				bool                        ibox_show_;
 				mutable nana::panel<true>	ibox_;
 				mutable nana::menu			menu_;
 			};
@@ -447,10 +457,33 @@ namespace nana
 		std::size_t size_categ() const;					///< Get the number of categories
 		std::size_t size_item(std::size_t cat) const;	///< Get the number of items in the specified category
 
+		/** \brief Show or hide the interactive boxes
+            \param[in] f true if you want the interactive boxes to show, this is the default.
+            \param[in] f false to hide the boxes
+
+            The interactive boxes are the small boxes that appear on the left of each property in the grid
+
+            They are supposed to provide a pop-up menu for the property,
+            similar to what nornally happens if you right click on something.
+
+            Unfortunately, they are undocumented ( except for this discussion )
+            and introduce a lot of visual clutter compared to the normal pop-up menu on right click
+
+            Call this with f = false before any properties are added to the grid
+            and the boxes will not appear.
+
+        */
+		void iBoxShow( bool f )
+		{
+		    ibox_show_ = f;
+		}
+
 	private:
 		drawerbase::propertygrid::essence_t & _m_ess() const;
 
 		bool	_en{ true };
+
+		bool ibox_show_;            ///< if true, a small box will appear on the right of every property added to the grid
 	};
 }//end namespace nana
 
