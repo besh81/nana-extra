@@ -16,7 +16,7 @@ cProp::cProp( cPropGrid& grid,
               const std::string& value,
               bool bvalue  )
     : myGrid( grid )
-    , myPanel( new nana::panel<true>( myGrid.Form() ) )
+    , myPanel( new nana::panel<true>( myGrid.Parent() ) )
     , myLabel( new nana::label( *myPanel ))
     , myTextbox( new nana::textbox( *myPanel ))
     , myCheckbox( new nana::checkbox( *myPanel ))
@@ -31,7 +31,11 @@ cProp::cProp( cPropGrid& grid,
     if( myValue.length() )
     {
         myType = eType::string;
-        myTextbox->move({1+myGrid.propWidth()/2,1, -3+myGrid.propWidth()/2,myGrid.propHeight()-2});
+        myTextbox->move({1+myGrid.propWidth()/2,
+                         1,
+                         -2*myGrid.margin()+myGrid.propWidth()/2,
+                         myGrid.propHeight()-2
+                        });
         myTextbox->caption( myValue );
         myTextbox->events().mouse_leave([this]
         {
@@ -58,7 +62,7 @@ cProp::cProp( cPropGrid& grid,
 cProp::cProp( cPropGrid& grid,
               const std::string& name )
     : myGrid( grid )
-    , myPanel( new nana::panel<true>(  myGrid.Form() ) )
+    , myPanel( new nana::panel<true>(  myGrid.Parent() ) )
     , myLabel( new nana::label( *myPanel ))
     , myCheckbox( new nana::checkbox( *myPanel ))
     , myName( name )
@@ -66,7 +70,7 @@ cProp::cProp( cPropGrid& grid,
     , myType( eType::category )
 {
     int h = myGrid.propHeight();
-    myPanel->move({ 0, (h * myIndex), myGrid.propWidth(), 2 * h });
+    myPanel->move({ 3, (h * myIndex), myGrid.propWidth(), 2 * h });
     myLabel->move({ 20, 3, myGrid.propWidth()/2,2*h-4 });
     myLabel->caption( myName );
     myLabel->fgcolor( colors::blue );
@@ -94,7 +98,7 @@ cProp::cProp(
     const std::vector< std::string >& vChoice
 )
     : myGrid( grid )
-    , myPanel( new nana::panel<true>(  myGrid.Form() ) )
+    , myPanel( new nana::panel<true>(  myGrid.Parent() ) )
     , myLabel( new nana::label( *myPanel ))
     , myCombox( new nana::combox( * myPanel ))
     , myName( name )
@@ -115,11 +119,18 @@ cProp::cProp(
 
 void cProp::PanelLabel()
 {
-    myPanel->move({ 0, (myGrid.propHeight() * myIndex),    myGrid.propWidth(), myGrid.propHeight() });
-    myLabel->move({ 1,1,                                   myGrid.propWidth()/2, myGrid.propHeight()-2 });
+    myPanel->move({ myGrid.margin(),
+                    (myGrid.propHeight() * myIndex),
+                    myGrid.propWidth() - 2 * myGrid.margin(),
+                    myGrid.propHeight()
+                  });
+    myLabel->move({ 1,1,
+                    myGrid.propWidth()/2,
+                    myGrid.propHeight()-2
+                  });
     myLabel->caption( myName );
 
-    // dcontsruct pop-up menu with restore default item
+    // contsruct pop-up menu with restore default item
     // application code can add items to this menu
     myMenu.append("Restore",[this](menu::item_proxy& ip)
     {
@@ -137,7 +148,7 @@ void cProp::PanelLabel()
     myLabel->events().mouse_down([this](const arg_mouse& arg)
     {
         if ( arg.right_button )
-            myMenu.popup_await(myGrid.Form(), arg.pos.x, arg.pos.y);
+            myMenu.popup_await(myGrid.Parent(), arg.pos.x, arg.pos.y);
     });
 
     // draw box around property
@@ -147,8 +158,6 @@ void cProp::PanelLabel()
         int h = myGrid.propHeight()-1;
         int w = -1 + myGrid.propWidth();
         graph.line( {0,h}, {w,h},colors::black);
-        graph.line( {w-1,0}, {w-1,h},colors::black);
-        graph.line( {w,0}, {w,h},colors::black);
     });
 }
 
@@ -156,8 +165,10 @@ void cProp::visible( bool& f, int& index )
 {
     if( IsCategory() )
     {
-        myPanel->move( { 0, myGrid.propHeight() * index,
-                         myGrid.propWidth(), 2*myGrid.propHeight()
+        myPanel->move( { myGrid.margin(),
+                         myGrid.margin() + myGrid.propHeight() * index,
+                         myGrid.propWidth() - 2 * myGrid.margin(),
+                         2 * myGrid.propHeight()
                        });
         index += 2;
         f = IsExpanded();
@@ -178,8 +189,10 @@ void cProp::visible( bool& f, int& index )
             myCombox->show();
             break;
         }
-        myPanel->move( { 0, myGrid.propHeight() * index,
-                         myGrid.propWidth(), myGrid.propHeight()
+        myPanel->move( { myGrid.margin(),
+                         myGrid.margin() + myGrid.propHeight() * index,
+                         myGrid.propWidth() - 2 * myGrid.margin(),
+                         myGrid.propHeight()
                        });
         index++;
     }
@@ -216,6 +229,19 @@ void cProp::value( const std::string& v )
     myTextbox->caption( v );
 }
 
+cPropGrid::cPropGrid( panel<true>& parent )
+    : myParent( parent )
+{
+    drawing dw{myParent};
+    dw.draw([this](paint::graphics& graph)
+    {
+        graph.round_rectangle( { 0,1, propWidth()-1,myVisibleHeight-1},
+                               3,3, colors::black, false, colors::black );
+        graph.round_rectangle( { 1,1, propWidth()-2,myVisibleHeight-2},
+                               3,3, colors::black, false, colors::black );
+    });
+}
+
 void cPropGrid::Expand( const std::string& name, bool f )
 {
     for( auto p : myProp )
@@ -228,26 +254,20 @@ void cPropGrid::Expand( const std::string& name, bool f )
     visible();
 }
 
-void cPropGrid::Collapse( const std::string& name )
-{
-    for( auto p : myProp )
-        if( p->Name() == name )
-        {
-            if( ! p->IsCategory() )
-                return;
-            p->Expand( false );
-        }
-    visible();
-}
-
 void cPropGrid::visible()
 {
     bool fexp = true;
-    int index = 0;
+    myVisibleHeight = 0;
     for( auto p : myProp )
     {
-        p->visible( fexp, index );
+        p->visible( fexp, myVisibleHeight );
     }
+    // convert from rows to pixels
+    myVisibleHeight *= propHeight();
+    myVisibleHeight += 2 * margin() - 1;
+
+    // force grid margin redraw
+    nana::API::refresh_window ( myParent );
 }
 
 cProp * cPropGrid::find(

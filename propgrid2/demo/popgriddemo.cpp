@@ -8,9 +8,9 @@ int main()
 {
     using namespace nana;
 
-    form fm( 0, nana::size{ 600, 500 } );
-
-    cPropGrid pg( fm );
+    form fm( 0, nana::size{ 400, 500 } );
+    panel<true> pnl( fm, { 20, 20, 300, 400 });
+    cPropGrid pg( pnl );
     pg.category( "Strings" );
     pg.string( "test1", "1" )->tooltip( "helpful description" );
     pg.string( "test2", "2" );
@@ -20,14 +20,14 @@ int main()
     pg.check( "test4", false );
     pg.check( "test5", true );
 
-    pg.category("cat");
+    pg.category("Cat");
     pg.string( "test6", "false" );
     pg.check( "test7", true );
 
     pg.category( "choices" );
     pg.choice( "Select ", {"A","B","C"});
 
-    pg.Collapse("Bools");
+    pg.Expand("Bools",false);
 
     pg.change_event([]( cProp& prop )
     {

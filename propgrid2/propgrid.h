@@ -122,16 +122,16 @@ private:
     /// Common constructor for all properties except category typw
     void PanelLabel();
 };
+
+/// A class to hold properties and display them for editing in a grid
+
 class cPropGrid
 {
     friend cProp;
 
 public:
-    cPropGrid( nana::form& fm )
-        : myfm( fm )
-    {
-        myfm.move({100,100,propWidth(),220});
-    }
+    cPropGrid( panel<true>& parent );
+
     ~cPropGrid()
     {
         for( auto p : myProp )
@@ -195,11 +195,15 @@ public:
     */
     cProp* find( const std::string& category, const std::string& name );
 
+    /** Set visibility of properties in a category
+        \param[in] name of category
+        \param[in] f true if properties should be visible, default true
+    */
     void Expand( const std::string& name, bool f = true );
-    void Collapse( const std::string& name );
-    nana::form& Form()
+
+    window Parent()
     {
-        return myfm;
+        return myParent;
     }
     int propWidth()
     {
@@ -208,6 +212,10 @@ public:
     int propHeight()
     {
         return 22;
+    }
+    int margin()
+    {
+        return 3;
     }
     /** Register function to be called wnen property changes value
             \param[in] f function to be called
@@ -223,7 +231,7 @@ public:
             std::cout
                 << "Property "  << prop.Name()
                 << " in "       << prop.CatName()
-                << " value is " << prop.Value()
+                << " value is " << prop.value()
                 << "\n";
             });
     </pre>
@@ -242,10 +250,11 @@ public:
 
 private:
 
-    nana::form& myfm;
+    panel<true>& myParent;
     std::vector< cProp* > myProp;
     std::function<void( cProp& prop )> myChangeEventFunction;
     std::string myCurCatName;
+    int myVisibleHeight;
 
     /// Move visible properties to required screen locations when categories expand or collapse
     void visible();
