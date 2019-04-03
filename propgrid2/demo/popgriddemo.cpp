@@ -34,9 +34,11 @@ int main()
         std::cout
             << "Property "  << prop.Name()
             << " in "       << prop.CatName()
-            << " value is " << prop.Value()
+            << " value is " << prop.value()
             << "\n";
     });
+
+    pg.find( "Strings", "test1")->value( "42" );
 
 
     //Expose the form.

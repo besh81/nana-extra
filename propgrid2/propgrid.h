@@ -48,10 +48,18 @@ public:
     {
         return myName;
     }
-    std::string Value()
+    /** Get value of string property
+        \return value
+    */
+    std::string value()
     {
         return myValue;
     }
+    /** Set value of string property
+        \param[in] v value to set
+    */
+    void value( const std::string& v );
+
     std::string CatName()
     {
         return myCatName;
@@ -67,10 +75,13 @@ public:
         return myCheckbox->checked();
     }
     /** Show property when category is expanded or collapsed
-        @param[in] f true to show, false to hide
+        \param[in] f true to show, false to hide
     */
     void Show( bool f );
 
+    /** Add helpful description that pops up when mouse hovers over property name
+        \param[in] msg to pop up
+    */
     void tooltip( const std::string& msg );
 
 private:
@@ -162,7 +173,13 @@ public:
                                  vChoice ));
     }
 
-    std::vector< cProp* >::iterator Find( const std::string name );
+    /** Find property by category and name
+        \param[in] category name of category
+        \param[in] name name of property
+        \return pointer to property if found, otherwise nullptr
+    */
+    cProp* find( const std::string& category, const std::string& name );
+
     void Expand( const std::string& name, bool f = true );
     void Collapse( const std::string& name );
     nana::form& Form()

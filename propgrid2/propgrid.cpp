@@ -115,7 +115,7 @@ void cProp::PanelLabel()
     myPanel->move({ 0, (myGrid.propHeight() * myIndex),    myGrid.propWidth(), myGrid.propHeight() });
     myLabel->move({ 1,1,                                   myGrid.propWidth()/2, myGrid.propHeight()-2 });
     myLabel->caption( myName );
-        nana::drawing dw{*myPanel};
+    nana::drawing dw{*myPanel};
     dw.draw([this](paint::graphics& graph)
     {
         int h = myGrid.propHeight()-1;
@@ -135,9 +135,15 @@ void cProp::Show( bool f )
         myLabel->show();
         switch( myType )
         {
-            case eType::string: myTextbox->show(); break;
-            case eType::check:  myCheckbox->show(); break;
-            case eType::choice: myCombox->show(); break;
+        case eType::string:
+            myTextbox->show();
+            break;
+        case eType::check:
+            myCheckbox->show();
+            break;
+        case eType::choice:
+            myCombox->show();
+            break;
         }
     }
     else
@@ -148,10 +154,18 @@ void cProp::Show( bool f )
     }
 }
 
-    void cProp::tooltip( const std::string& msg )
-    {
-        myLabel->tooltip( msg );
-    }
+void cProp::tooltip( const std::string& msg )
+{
+    myLabel->tooltip( msg );
+}
+
+void cProp::value( const std::string& v )
+{
+    if( myType != eType::string )
+        return;
+    myValue = v;
+    myTextbox->caption( v );
+}
 
 void cPropGrid::Expand( const std::string& name, bool f )
 {
@@ -201,7 +215,8 @@ void cPropGrid::CollapseAll()
             {
                 index++;
                 p->move( { 0, (propHeight() * index),
-                        propWidth(), propHeight() });
+                           propWidth(), propHeight()
+                         });
             }
             else
             {
@@ -209,6 +224,26 @@ void cPropGrid::CollapseAll()
             }
         }
     }
+}
+
+cProp * cPropGrid::find(
+    const std::string& category,
+    const std::string& name )
+{
+    std::string cat;
+    for( auto p : myProp )
+    {
+        if( p->IsCategory() )
+        {
+            cat = p->Name();
+            continue;
+        }
+        if( cat != category )
+            continue;
+        if( p->Name() == name )
+            return p;
+    }
+    return nullptr;
 }
 
 }
