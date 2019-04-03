@@ -5,6 +5,7 @@
 #include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
+#include <nana/gui/widgets/combox.hpp>
 
 namespace nana
 {
@@ -15,14 +16,14 @@ class cProp
 {
 public:
     cProp( cPropGrid& grid,
-           const std::string& catName,
            const std::string& name,
            const std::string& value,
-           bool bvalue,
-           int index  );
+           bool bvalue );
     cProp( cPropGrid& grid,
-           const std::string& name,
-           int index  );
+           const std::string& name );
+    cProp( cPropGrid& grid,
+          const std::string& name,
+          const std::vector< std::string >& vChoice );
     ~cProp()
     {
         delete myTextbox;
@@ -65,7 +66,7 @@ public:
     {
         return myCheckbox->checked();
     }
-    /** Show property
+    /** Show property when category is expanded or collapsed
         @param[in] f true to show, false to hide
     */
     void Show( bool f );
@@ -76,6 +77,7 @@ private:
     nana::label * myLabel;
     nana::textbox * myTextbox;
     nana::checkbox * myCheckbox;
+    nana::combox * myCombox;
     std::string myCatName;
     std::string myName;
     std::string myValue;
@@ -87,7 +89,10 @@ private:
         string,
         check,
         category,
+        choice,
     } myType;
+
+    void PanelLabel();
 };
 class cPropGrid
 {
@@ -111,11 +116,9 @@ public:
     {
         myProp.emplace_back( new cProp(
                                  *this,
-                                 myCurCatName,
                                  name,
                                  value,
-                                 false,
-                                 (int)myProp.size() ) );
+                                 false ) );
     }
     /** Add checkbox property
         @param[in] name
@@ -126,11 +129,9 @@ public:
     {
         myProp.emplace_back( new cProp(
                                  *this,
-                                 myCurCatName,
                                  name,
                                  "",
-                                 value,
-                                 (int)myProp.size() ) );
+                                 value ) );
     }
     /** Add category
         @param[in] name
@@ -139,10 +140,20 @@ public:
     {
         myProp.emplace_back( new cProp(
                                  *this,
-                                 name,
-                                 (int)myProp.size() ) );
+                                 name ) );
         myCurCatName = name;
     }
+
+    void AddChoice(
+        const std::string name,
+        const std::vector< std::string >& vChoice )
+    {
+        myProp.emplace_back( new cProp(
+                                 *this,
+                                 name,
+                                 vChoice ));
+    }
+
     std::vector< cProp* >::iterator Find( const std::string name );
     void Expand( const std::string& name, bool f = true );
     void Collapse( const std::string& name );
@@ -154,6 +165,10 @@ public:
     {
         return 300;
     }
+    int propHeight()
+    {
+        return 22;
+    }
     /** Function called wnen changed property loses focus
         @pram[in] f function to be called
     */
@@ -164,6 +179,17 @@ public:
     std::function<void( cProp& prop )> ChangeFunction()
     {
         return myf;
+    }
+    /// Number of properties in grid of all types including categories
+    int size()
+    {
+        return (int) myProp.size();
+    }
+
+    /// Last category name. ( Properties added wil be included in this category )
+    std::string LastCatName() const
+    {
+        return myCurCatName;
     }
 
 private:

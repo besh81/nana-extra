@@ -12,30 +12,25 @@ namespace nana
 {
 
 cProp::cProp( cPropGrid& grid,
-              const std::string& catName,
               const std::string& name,
               const std::string& value,
-              bool bvalue,
-              int index  )
+              bool bvalue  )
     : myGrid( grid )
     , myPanel( new nana::panel<true>( myGrid.Form() ) )
     , myLabel( new nana::label( *myPanel ))
     , myTextbox( new nana::textbox( *myPanel ))
     , myCheckbox( new nana::checkbox( *myPanel ))
-    , myCatName( catName )
+    , myCatName( myGrid.LastCatName() )
     , myName( name )
     , myValue( value )
     , myValueBool( bvalue )
-    , myIndex( index )
+    , myIndex( myGrid.size() )
     , myType( eType::string )
 {
-    const int h = 22;
-    myPanel->move({ 20, (h * myIndex),myGrid.propWidth(), h });
-    myLabel->move({ 1,1, myGrid.propWidth()/2, h-2 });
-    myLabel->caption( myName );
+    PanelLabel();
     if( myValue.length() )
     {
-        myTextbox->move({1+myGrid.propWidth()/2,1, -1+myGrid.propWidth()/2,h-2});
+        myTextbox->move({1+myGrid.propWidth()/2,1, -1+myGrid.propWidth()/2,myGrid.propHeight()-2});
         myTextbox->caption( myValue );
         myTextbox->events().mouse_leave([this]
         {
@@ -49,7 +44,7 @@ cProp::cProp( cPropGrid& grid,
     }
     else
     {
-        myCheckbox->move({myGrid.propWidth()/2,1, 48,h-2});
+        myCheckbox->move({1+myGrid.propWidth()/2,1, 48,myGrid.propHeight()-2});
         myCheckbox->check( myValueBool );
         myCheckbox->events().click([this]
         {
@@ -68,22 +63,20 @@ cProp::cProp( cPropGrid& grid,
 }
 
 cProp::cProp( cPropGrid& grid,
-              const std::string& name,
-              int index  )
+              const std::string& name )
     : myGrid( grid )
     , myPanel( new nana::panel<true>(  myGrid.Form() ) )
     , myLabel( new nana::label( *myPanel ))
     , myCheckbox( new nana::checkbox( *myPanel ))
     , myName( name )
-    , myIndex( index )
+    , myIndex( myGrid.size() )
     , myType( eType::category )
 {
-    const int h = 22;
+    int h = myGrid.propHeight();
     myPanel->move({ 0, (h * myIndex), myGrid.propWidth(), h });
-    myPanel->show();
     myLabel->move({ 20,1, myGrid.propWidth()/2,h-2 });
     myLabel->caption( myName );
-    myCheckbox->move( {1,1,14,h-2} );
+    myCheckbox->move( {1,1,14,myGrid.propHeight()-2} );
     myCheckbox->check( true );
     myCheckbox->events().click([this]
     {
@@ -98,6 +91,38 @@ cProp::cProp( cPropGrid& grid,
     });
 }
 
+cProp::cProp(
+    cPropGrid& grid,
+    const std::string& name,
+    const std::vector< std::string >& vChoice
+)
+    : myGrid( grid )
+    , myPanel( new nana::panel<true>(  myGrid.Form() ) )
+    , myLabel( new nana::label( *myPanel ))
+    , myCombox( new nana::combox( * myPanel ))
+    , myName( name )
+    , myIndex( myGrid.size() )
+    , myType( eType::choice )
+    , myCatName( myGrid.LastCatName() )
+{
+    PanelLabel();
+    myCombox->move({1+myGrid.propWidth()/2,1, -1+myGrid.propWidth()/2,myGrid.propHeight()-2});
+    for( const auto& s : vChoice )
+        myCombox->push_back( s );
+    myCombox->events().text_changed([this]
+    {
+        myValue = myCombox->caption();
+        myGrid.ChangeFunction()( *this );
+    });
+}
+
+void cProp::PanelLabel()
+{
+    myPanel->move({ 0, (myGrid.propHeight() * myIndex),    myGrid.propWidth(), myGrid.propHeight() });
+    myLabel->move({ 1,1,                                   myGrid.propWidth()/2, myGrid.propHeight()-2 });
+    myLabel->caption( myName );
+}
+
 void cProp::Show( bool f )
 {
     if( IsCategory() )
@@ -105,8 +130,12 @@ void cProp::Show( bool f )
     if( f )
     {
         myLabel->show();
-        if( myType == eType::string )
-            myTextbox->show();
+        switch( myType )
+        {
+            case eType::string: myTextbox->show(); break;
+            case eType::check:  myCheckbox->show(); break;
+            case eType::choice: myCombox->show(); break;
+        }
     }
     else
     {
