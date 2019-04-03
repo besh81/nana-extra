@@ -32,13 +32,19 @@ int main()
     pg.change_event([]( cProp& prop )
     {
         std::cout
-            << "Property "  << prop.Name()
-            << " in "       << prop.CatName()
-            << " value is " << prop.value()
-            << "\n";
+                << "Property "  << prop.Name()
+                << " in "       << prop.CatName()
+                << " value is " << prop.value()
+                << "\n";
     });
 
     pg.find( "Strings", "test1")->value( "42" );
+
+    pg.find( "Strings", "test2")->menu().append("Test",[](menu::item_proxy& ip)
+    {
+        msgbox m("test1 popup menu extra");
+        m.show();
+    });
 
 
     //Expose the form.

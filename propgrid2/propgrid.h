@@ -6,6 +6,7 @@
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
+#include <nana/gui/widgets/menu.hpp>
 
 namespace nana
 {
@@ -84,6 +85,24 @@ public:
     */
     void tooltip( const std::string& msg );
 
+    /** Get menu which pops-up when user presses mouse right button on property label
+
+    Use this to add items to the menu
+
+    <pre>
+        // find property and add item to the pop-up menu
+        pg.find( "category_name", "property_name" )->menu().append("Test",[](menu::item_proxy& ip)
+        {
+            msgbox m("popup menu extra");
+            m.show();
+        });
+    </pre>
+    */
+    menu& menu()
+    {
+        return myMenu;
+    }
+
 private:
     cPropGrid& myGrid;
     nana::panel<true> * myPanel;
@@ -91,9 +110,11 @@ private:
     nana::textbox * myTextbox;
     nana::checkbox * myCheckbox;
     nana::combox * myCombox;
+    nana::menu myMenu;
     std::string myCatName;
     std::string myName;
     std::string myValue;
+    std::string myDefaultValue;
     bool myValueBool;
     int myIndex;
     enum class eType
@@ -105,6 +126,7 @@ private:
         choice,
     } myType;
 
+    /// Common constructor for all properties except category typw
     void PanelLabel();
 };
 class cPropGrid

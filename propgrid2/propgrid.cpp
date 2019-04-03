@@ -23,12 +23,14 @@ cProp::cProp( cPropGrid& grid,
     , myCatName( myGrid.LastCatName() )
     , myName( name )
     , myValue( value )
+    , myDefaultValue( value )
     , myValueBool( bvalue )
     , myIndex( myGrid.size() )
 {
     PanelLabel();
     if( myValue.length() )
     {
+        myType = eType::string;
         myTextbox->move({1+myGrid.propWidth()/2,1, -3+myGrid.propWidth()/2,myGrid.propHeight()-2});
         myTextbox->caption( myValue );
         myTextbox->events().mouse_leave([this]
@@ -39,7 +41,6 @@ cProp::cProp( cPropGrid& grid,
                 myGrid.ChangeEventFunction()( *this );
             }
         });
-        myType = eType::string;
     }
     else
     {
@@ -117,6 +118,29 @@ void cProp::PanelLabel()
     myPanel->move({ 0, (myGrid.propHeight() * myIndex),    myGrid.propWidth(), myGrid.propHeight() });
     myLabel->move({ 1,1,                                   myGrid.propWidth()/2, myGrid.propHeight()-2 });
     myLabel->caption( myName );
+
+    // dcontsruct pop-up menu with restore default item
+    // application code can add items to this menu
+    myMenu.append("Restore",[this](menu::item_proxy& ip)
+    {
+        switch( myType )
+        {
+        case eType::string:
+            myValue = myDefaultValue;
+            myTextbox->caption( myDefaultValue );
+            myGrid.ChangeEventFunction()( *this );
+            break;
+        }
+    });
+
+    // pop-up menu when user presses right mouse button on the label
+    myLabel->events().mouse_down([this](const arg_mouse& arg)
+    {
+        if ( arg.right_button )
+            myMenu.popup_await(myGrid.Form(), arg.pos.x, arg.pos.y);
+    });
+
+    // draw box around property
     nana::drawing dw{*myPanel};
     dw.draw([this](paint::graphics& graph)
     {
@@ -170,6 +194,7 @@ void cProp::tooltip( const std::string& msg )
 {
     myLabel->tooltip( msg );
 }
+
 
 void cProp::value( const std::string& v )
 {
