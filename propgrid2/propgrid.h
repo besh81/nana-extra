@@ -144,11 +144,10 @@ public:
     {
         return myName;
     }
-    /// \brief Get value of string property
-    std::string value()
-    {
-        return myValue;
-    }
+    /// \brief Get value of property as string
+    std::string value();
+
+    /// \brief Get value of check property as boolean
     bool valueBool()
     {
         return myValueBool;
@@ -160,7 +159,7 @@ public:
     void value( const std::string& v );
 
     /// \brief get name of category that contains property.
-    std::string CatName()
+    std::string catName()
     {
         return myCatName;
     }

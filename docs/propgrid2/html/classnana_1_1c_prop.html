@@ -106,14 +106,19 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:a66494002fdf02214e0f3ab9ae3b13060"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b223fb0947974daed19b7dca5bf925a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b223fb0947974daed19b7dca5bf925a"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnana_1_1c_prop.html#a5b223fb0947974daed19b7dca5bf925a">value</a> ()</td></tr>
-<tr class="memdesc:a5b223fb0947974daed19b7dca5bf925a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get value of string property. <br/></td></tr>
+<tr class="memdesc:a5b223fb0947974daed19b7dca5bf925a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get value of property as string. <br/></td></tr>
 <tr class="separator:a5b223fb0947974daed19b7dca5bf925a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf930dd3f6eb89cbb7b973513b852d75"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf930dd3f6eb89cbb7b973513b852d75"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnana_1_1c_prop.html#acf930dd3f6eb89cbb7b973513b852d75">valueBool</a> ()</td></tr>
+<tr class="memdesc:acf930dd3f6eb89cbb7b973513b852d75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get value of check property as boolean. <br/></td></tr>
+<tr class="separator:acf930dd3f6eb89cbb7b973513b852d75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af66b9d168651eaf8af5a0273fc1967c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnana_1_1c_prop.html#af66b9d168651eaf8af5a0273fc1967c7">value</a> (const std::string &amp;v)</td></tr>
+<tr class="memdesc:af66b9d168651eaf8af5a0273fc1967c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set value of string property.  <a href="#af66b9d168651eaf8af5a0273fc1967c7">More...</a><br/></td></tr>
 <tr class="separator:af66b9d168651eaf8af5a0273fc1967c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7db02681196214485555fae5de7a925d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7db02681196214485555fae5de7a925d"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnana_1_1c_prop.html#a7db02681196214485555fae5de7a925d">CatName</a> ()</td></tr>
-<tr class="memdesc:a7db02681196214485555fae5de7a925d"><td class="mdescLeft">&#160;</td><td class="mdescRight">get name of category that contains property. <br/></td></tr>
-<tr class="separator:a7db02681196214485555fae5de7a925d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a6abd4036adf443da488c150d1a1288"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a6abd4036adf443da488c150d1a1288"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnana_1_1c_prop.html#a3a6abd4036adf443da488c150d1a1288">catName</a> ()</td></tr>
+<tr class="memdesc:a3a6abd4036adf443da488c150d1a1288"><td class="mdescLeft">&#160;</td><td class="mdescRight">get name of category that contains property. <br/></td></tr>
+<tr class="separator:a3a6abd4036adf443da488c150d1a1288"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79f943eebe70c96273b4e74bc811157a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnana_1_1c_prop.html#a79f943eebe70c96273b4e74bc811157a">tooltip</a> (const std::string &amp;msg)</td></tr>
 <tr class="memdesc:a79f943eebe70c96273b4e74bc811157a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add helpful description that pops up when mouse hovers over property name.  <a href="#a79f943eebe70c96273b4e74bc811157a">More...</a><br/></td></tr>
 <tr class="separator:a79f943eebe70c96273b4e74bc811157a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,13 +154,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Get menu which pops-up when user presses mouse right button on property label. </p>
 <p>Use this to add items to the menu</p>
 <pre>
-find property and add item to the pop-up menu
-        pg.find( "category_name", "property_name" )-&gt;<a class="el" href="classnana_1_1c_prop.html#ae153cd37369237ce690fdd179dab55f4" title="Get menu which pops-up when user presses mouse right button on property label. ">menu()</a>.append("Test",[](menu::item_proxy&amp; ip)
-        {
-            msgbox m("popup menu extra");
-            m.show();
-        });
-    </pre> 
+    pg.find( "category_name", "property_name" )-&gt;<a class="el" href="classnana_1_1c_prop.html#ae153cd37369237ce690fdd179dab55f4" title="Get menu which pops-up when user presses mouse right button on property label. ">menu()</a>.append("Test",[](menu::item_proxy&amp; ip)
+    {
+        msgbox m("popup menu extra");
+        m.show();
+    });
+</pre> 
 </div>
 </div>
 <a class="anchor" id="a79f943eebe70c96273b4e74bc811157a"></a>
@@ -195,7 +199,8 @@ find property and add item to the pop-up menu
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set value of string property </p>
+
+<p>Set value of string property. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>value to set </td></tr>
@@ -212,7 +217,7 @@ find property and add item to the pop-up menu
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 4 2019 10:56:53 for My Project by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 4 2019 11:28:56 for My Project by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

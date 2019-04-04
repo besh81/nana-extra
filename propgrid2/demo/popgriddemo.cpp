@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <nana/gui.hpp>
 
 #include "propgrid.h"
@@ -10,6 +11,7 @@ int main()
 
     form fm( 0, nana::size{ 400, 500 } );
     panel<true> pnl( fm, { 20, 20, 300, 400 });
+    nana::label status( fm, nana::rectangle{ 20, 450, 200, 25 }, true );
     cPropGrid pg( pnl );
     pg.category( "Strings" );
     pg.string( "test1", "1" )->tooltip( "helpful description" );
@@ -36,13 +38,14 @@ int main()
 
     pg.Expand("Bools",false);
 
-    pg.change_event([]( cProp& prop )
+    pg.change_event([&status]( cProp& prop )
     {
-        std::cout
-                << "Property "  << prop.name()
-                << " in "       << prop.CatName()
+        std::stringstream ss;
+        ss        << "Property "  << prop.name()
+                << " in "       << prop.catName()
                 << " value is " << prop.value()
                 << "\n";
+        status.caption( ss.str() );
     });
 
     pg.find( "Strings", "test1")->value( "42" );
