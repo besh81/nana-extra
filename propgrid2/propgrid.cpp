@@ -371,17 +371,9 @@ cProp * cPropGrid::find(
     const std::string& category,
     const std::string& name )
 {
-    std::string cat;
     for( auto p : myProp )
     {
-        if( p->IsCategory() )
-        {
-            cat = p->name();
-            continue;
-        }
-        if( cat != category )
-            continue;
-        if( p->name() == name )
+        if( p->catName() == category && p->name() == name )
             return p;
     }
     return nullptr;

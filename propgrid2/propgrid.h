@@ -180,6 +180,9 @@ public:
             m.show();
         });
     </pre>
+
+    The menu is pre-configured with one item, "restore", which will set the property value
+    back to the value specified when the property was added to the grid.
     */
     menu& menu()
     {
