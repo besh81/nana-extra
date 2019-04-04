@@ -37,6 +37,7 @@
 			<Add option="-m64" />
 			<Add directory="$(#nana.include)" />
 			<Add directory=".." />
+			<Add directory="../../panel_scrolled" />
 		</Compiler>
 		<Linker>
 			<Add option="-static" />
@@ -47,8 +48,8 @@
 			<Add directory="$(#nana.lib)" />
 		</Linker>
 		<Unit filename="../propgrid.cpp" />
+		<Unit filename="../propgrid.h" />
 		<Unit filename="popgriddemo.cpp" />
-		<Unit filename="propgrid.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -257,15 +257,20 @@ void cProp::value( const std::string& v )
 }
 
 cPropGrid::cPropGrid( panel<true>& parent )
-    : myParent( parent, {0,0,parent.size().width,parent.size().height}, {0,0,300,500} )
+    : myGridPanel( parent, {0,0,parent.size().width,parent.size().height}, {0,0,300,500} )
+    , myParent( parent )
 {
 
-    drawing dw{myParent};
+    drawing dw{ myParent };
     dw.draw([this](paint::graphics& graph)
     {
-        graph.round_rectangle( { 0,1, propWidth()-1,myVisibleHeight-1},
+//        graph.round_rectangle( { 0,1, propWidth()-1,myVisibleHeight-1},
+//                               3,3, colors::black, false, colors::black );
+//        graph.round_rectangle( { 1,1, propWidth()-2,myVisibleHeight-2},
+//                               3,3, colors::black, false, colors::black );
+        graph.round_rectangle( { 0,0, myParent.size().width-1,myParent.size().height-1},
                                3,3, colors::black, false, colors::black );
-        graph.round_rectangle( { 1,1, propWidth()-2,myVisibleHeight-2},
+        graph.round_rectangle( { 1,1, myParent.size().width-2,myParent.size().height-2},
                                3,3, colors::black, false, colors::black );
     });
 }
@@ -294,10 +299,10 @@ void cPropGrid::visible()
     myVisibleHeight *= propHeight();
     myVisibleHeight += 2 * margin() - 1;
 
-    myParent.size( {propWidth(),myVisibleHeight});
+    myGridPanel.size( {propWidth(),myVisibleHeight});
 
     // force grid margin redraw
-    nana::API::refresh_window ( myParent );
+    nana::API::refresh_window_tree( myParent );
 }
     cProp* cPropGrid::string( const std::string& name,
                    const std::string& value )
