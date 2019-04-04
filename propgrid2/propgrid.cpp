@@ -187,58 +187,34 @@ void cProp::PanelLabel()
         graph.line( {0,h}, {w,h},colors::black);
     });
 }
+void cProp::PanelMove( int row )
+{
+    int rowheight = 1;
+    if( myType == eType::category )
+        rowheight = 2;
+    myPanel->move( { myGrid.margin(),
+                     myGrid.margin() + myGrid.propHeight() * row,
+                     myGrid.propWidth() - 2 * myGrid.margin(),
+                     rowheight * myGrid.propHeight()
+                   });
+}
 
 void cProp::visible( bool& f, int& index )
 {
     if( IsCategory() )
     {
-        myPanel->move( { myGrid.margin(),
-                         myGrid.margin() + myGrid.propHeight() * index,
-                         myGrid.propWidth() - 2 * myGrid.margin(),
-                         2 * myGrid.propHeight()
-                       });
-        index += 2;
-        f = IsExpanded();
-        return;
+        PanelMove( index );     // category always visible
+        index += 2;             // display takes two rows
+        f = IsExpanded();       // control visibility of contained properties
     }
-    if( f )
+    else if( f )
     {
-        myLabel->show();
-        switch( myType )
-        {
-        case eType::string:
-            myTextbox->show();
-            break;
-        case eType::check:
-            myCheckbox->show();
-            break;
-        case eType::choice:
-            myCombox->show();
-            break;
-        }
-        myPanel->move( { myGrid.margin(),
-                         myGrid.margin() + myGrid.propHeight() * index,
-                         myGrid.propWidth() - 2 * myGrid.margin(),
-                         myGrid.propHeight()
-                       });
-        index++;
+        PanelMove( index );     // property is visible
+        index++;                // displays in one row
     }
     else
     {
-        myLabel->hide();
-        switch( myType )
-        {
-        case eType::string:
-            myTextbox->hide();
-            break;
-        case eType::check:
-            myCheckbox->hide();
-            break;
-        case eType::choice:
-            myCombox->hide();
-            break;
-        }
-        myPanel->move( { 0,0,0,0 });
+        myPanel->move( { 0,0,0,0 });    // invisible property
     }
 }
 

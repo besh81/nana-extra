@@ -259,6 +259,8 @@ private:
     {
         return myType == eType::category;
     }
+
+    void PanelMove( int row );
 };
 
 /// A class to hold properties and display them for editing in a grid
