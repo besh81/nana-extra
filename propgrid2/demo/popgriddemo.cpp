@@ -25,7 +25,14 @@ int main()
     pg.check( "test7", true );
 
     pg.category( "choices" );
-    pg.choice( "Select ", {"A","B","C"});
+    pg.choice( "Select", {"A","B","C"});
+
+    pg.category( "Dialogs" );
+    pg.button( "dialog", []
+              {
+                    msgbox m("Button Dialog");
+                    m.show();
+              });
 
     pg.Expand("Bools",false);
 

@@ -16,7 +16,7 @@ cProp::cProp( cPropGrid& grid,
               const std::string& value,
               bool bvalue  )
     : myGrid( grid )
-    , myPanel( new nana::panel<true>( myGrid.Parent() ) )
+    , myPanel( new nana::panel<true>( myGrid.parent() ) )
     , myLabel( new nana::label( *myPanel ))
     , myTextbox( new nana::textbox( *myPanel ))
     , myCheckbox( new nana::checkbox( *myPanel ))
@@ -62,7 +62,7 @@ cProp::cProp( cPropGrid& grid,
 cProp::cProp( cPropGrid& grid,
               const std::string& name )
     : myGrid( grid )
-    , myPanel( new nana::panel<true>(  myGrid.Parent() ) )
+    , myPanel( new nana::panel<true>(  myGrid.parent() ) )
     , myLabel( new nana::label( *myPanel ))
     , myCheckbox( new nana::checkbox( *myPanel ))
     , myName( name )
@@ -98,7 +98,7 @@ cProp::cProp(
     const std::vector< std::string >& vChoice
 )
     : myGrid( grid )
-    , myPanel( new nana::panel<true>(  myGrid.Parent() ) )
+    , myPanel( new nana::panel<true>(  myGrid.parent() ) )
     , myLabel( new nana::label( *myPanel ))
     , myCombox( new nana::combox( * myPanel ))
     , myName( name )
@@ -116,6 +116,32 @@ cProp::cProp(
         myGrid.ChangeEventFunction()( *this );
     });
 }
+
+cProp::cProp(
+    cPropGrid& grid,
+    const std::string& name,
+    std::function<void()> f
+)
+    : myGrid( grid )
+    , myPanel( new nana::panel<true>(  myGrid.parent() ) )
+    , myLabel( new nana::label( *myPanel ))
+    , myButton( new nana::button( *myPanel ))
+    , myName( name )
+    , myIndex( myGrid.size() )
+    , myType( eType::button )
+    , myCatName( myGrid.LastCatName() )
+{
+    PanelLabel();
+    myButton->move({1+myGrid.propWidth()/2,1,
+                    myGrid.propHeight()-2,myGrid.propHeight()-2
+                   });
+    myButton->caption(" ... ");
+    myButton->events().click([f]
+    {
+        f();
+    });
+}
+
 
 void cProp::PanelLabel()
 {
@@ -148,7 +174,7 @@ void cProp::PanelLabel()
     myLabel->events().mouse_down([this](const arg_mouse& arg)
     {
         if ( arg.right_button )
-            myMenu.popup_await(myGrid.Parent(), arg.pos.x, arg.pos.y);
+            myMenu.popup_await(myGrid.parent(), arg.pos.x, arg.pos.y);
     });
 
     // draw box around property
@@ -268,6 +294,57 @@ void cPropGrid::visible()
 
     // force grid margin redraw
     nana::API::refresh_window ( myParent );
+}
+    cProp* cPropGrid::string( const std::string& name,
+                   const std::string& value )
+    {
+        myProp.emplace_back( new cProp(
+                                 *this,
+                                 name,
+                                 value,
+                                 false ) );
+        return myProp.back();
+    }
+
+cProp* cPropGrid::check( const std::string& name,
+                         bool value )
+{
+    myProp.emplace_back( new cProp(
+                             *this,
+                             name,
+                             "",
+                             value ) );
+    return myProp.back();
+}
+
+void cPropGrid::category( const std::string& name )
+{
+    myProp.emplace_back( new cProp(
+                             *this,
+                             name ) );
+    myCurCatName = name;
+}
+
+cProp* cPropGrid::choice(
+    const std::string name,
+    const std::vector< std::string >& vChoice )
+{
+    myProp.emplace_back( new cProp(
+                             *this,
+                             name,
+                             vChoice ));
+    return myProp.back();
+}
+
+cProp* cPropGrid::button(
+    std::string name,
+    std::function<void()> f )
+{
+    myProp.emplace_back( new cProp(
+                             *this,
+                             name,
+                             f ));
+    return myProp.back();
 }
 
 cProp * cPropGrid::find(

@@ -7,6 +7,7 @@
 #include <nana/gui/widgets/checkbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
 #include <nana/gui/widgets/menu.hpp>
+#include <nana/gui/widgets/button.hpp>
 
 namespace nana
 {
@@ -23,8 +24,11 @@ public:
     cProp( cPropGrid& grid,
            const std::string& name );
     cProp( cPropGrid& grid,
-          const std::string& name,
-          const std::vector< std::string >& vChoice );
+           const std::string& name,
+           const std::vector< std::string >& vChoice );
+    cProp( cPropGrid& grid,
+           const std::string& name,
+           std::function<void()> f);
     ~cProp()
     {
         delete myTextbox;
@@ -103,6 +107,7 @@ private:
     nana::textbox * myTextbox;
     nana::checkbox * myCheckbox;
     nana::combox * myCombox;
+    nana::button * myButton;
     nana::menu myMenu;
     std::string myCatName;
     std::string myName;
@@ -117,6 +122,7 @@ private:
         check,
         category,
         choice,
+        button,
     } myType;
 
     /// Common constructor for all properties except category typw
@@ -138,114 +144,87 @@ public:
             delete p;
     }
     /** Add string property
-        @param[in] name
-        @param[in] value
+        \param[in] name
+        \param[in] value
+        \return pointer to property if found, otherwise nullptr
     */
-    cProp* string( const std::string& name,
-              const std::string& value )
-    {
-        myProp.emplace_back( new cProp(
-                                 *this,
-                                 name,
-                                 value,
-                                 false ) );
-        return myProp.back();
-    }
+    cProp* string(
+        const std::string& name,
+        const std::string& value );
+
     /** Add checkbox property
-        @param[in] name
-        @param[in] value
+        \param[in] name
+        \param[in] value
+        \return pointer to property if found, otherwise nullptr
     */
-    void check( const std::string& name,
-                   bool value )
-    {
-        myProp.emplace_back( new cProp(
-                                 *this,
-                                 name,
-                                 "",
-                                 value ) );
-    }
+    cProp* check(
+        const std::string& name,
+        bool value );
+
     /** Add category
-        @param[in] name
+        \param[in] name
     */
-    void category( const std::string& name )
-    {
-        myProp.emplace_back( new cProp(
-                                 *this,
-                                 name ) );
-        myCurCatName = name;
-    }
+    void category(
+        const std::string& name );
+
     /** Add choice property
         \param[in] name
         \param[in] vChoice vector of possible choices
+        \return pointer to property if found, otherwise nullptr
     */
-    void choice(
+    cProp* choice(
         const std::string name,
-        const std::vector< std::string >& vChoice )
-    {
-        myProp.emplace_back( new cProp(
-                                 *this,
-                                 name,
-                                 vChoice ));
-    }
+        const std::vector< std::string >& vChoice );
+
+    /** Add button property
+            \param[in] name
+            \param[in] f function to call when button clicked
+            \return pointer to property if found, otherwise nullptr
+    */
+    cProp* button(
+        const std::string name,
+        std::function<void()> f );
 
     /** Find property by category and name
         \param[in] category name of category
         \param[in] name name of property
         \return pointer to property if found, otherwise nullptr
     */
-    cProp* find( const std::string& category, const std::string& name );
+    cProp* find(
+        const std::string& category,
+        const std::string& name );
 
     /** Set visibility of properties in a category
         \param[in] name of category
         \param[in] f true if properties should be visible, default true
     */
-    void Expand( const std::string& name, bool f = true );
+    void Expand(
+        const std::string& name, bool f = true );
 
-    window Parent()
-    {
-        return myParent;
-    }
-    int propWidth()
-    {
-        return 300;
-    }
-    int propHeight()
-    {
-        return 22;
-    }
-    int margin()
-    {
-        return 3;
-    }
     /** Register function to be called wnen property changes value
-            \param[in] f function to be called
+        \param[in] f function to be called
 
-        Function signature: void f( cProp* prop )
+    Function signature: void f( cProp* prop )
 
-        Usage:
+    Usage:
 
     <pre>
-            cPropGrid pg( fm );
-            pg.change_event([]( cProp& prop )
-            {
-            std::cout
-                << "Property "  << prop.Name()
-                << " in "       << prop.CatName()
-                << " value is " << prop.value()
-                << "\n";
-            });
+        cPropGrid pg( fm );
+        pg.change_event([]( cProp& prop )
+        {
+        std::cout
+            << "Property "  << prop.Name()
+            << " in "       << prop.CatName()
+            << " value is " << prop.value()
+            << "\n";
+        });
     </pre>
 
     */
-    void change_event( std::function<void( cProp& prop )> f)
+    void change_event(
+        std::function<void( cProp& prop )> f)
     {
         myChangeEventFunction = f;
-    }
-
-    /// Number of properties in grid of all types including categories
-    int size()
-    {
-        return (int) myProp.size();
     }
 
 private:
@@ -275,6 +254,29 @@ private:
     std::string LastCatName() const
     {
         return myCurCatName;
+    }
+
+    window parent()
+    {
+        return myParent;
+    }
+    int propWidth()
+    {
+        return 300;
+    }
+    int propHeight()
+    {
+        return 22;
+    }
+    int margin()
+    {
+        return 3;
+    }
+
+    /// Number of properties in grid of all types including categories
+    int size()
+    {
+        return (int) myProp.size();
     }
 };
 
