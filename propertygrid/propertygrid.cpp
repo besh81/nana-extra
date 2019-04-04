@@ -110,6 +110,8 @@ namespace nana
 				std::vector<pgitem_ptr> items;
 				std::vector<std::unique_ptr<inline_pane>>	inline_panes;
 
+				bool ibox_show_;
+
 				bool expand{ true };
 
 				category_t() = default;
@@ -625,11 +627,13 @@ namespace nana
 				}
 
 				// draw interaction-box
+				if( ibox_show_ ) {
 				if(iboxw)
 				{
 					area.x += valuew;
 					area.width = iboxw;
 					draw_ibox(graph, area, bgcolor, fgcolor);
+				}
 				}
 			}
 
@@ -1285,6 +1289,8 @@ namespace nana
 			{
 				internal_scope_guard lock;
 
+				p->iboxShow( cat_->ibox_show_ );
+
 				std::unique_ptr<inline_pane> pane_ptr(new inline_pane(*ess_->lister.wd_ptr()));
 
 				p->activate(ess_, index_pair{ pos_, cat_->items.size() });
@@ -1482,11 +1488,13 @@ namespace nana
 
 	//class propertygrid
 	propertygrid::propertygrid(window wd, bool visible)
+	: ibox_show_( true )
 	{
 		create(wd, rectangle(), visible);
 	}
 
 	propertygrid::propertygrid(window wd, const rectangle& r, bool visible)
+	: ibox_show_( true )
 	{
 		create(wd, r, visible);
 	}
@@ -1545,6 +1553,7 @@ namespace nana
 
 		internal_scope_guard lock;
 		auto new_cat_ptr = ess.lister.create_cat(std::move(str));
+		new_cat_ptr->ibox_show_ = ibox_show_;
 		ess.update();
 
 		return cat_proxy{ &ess, new_cat_ptr };
@@ -1555,6 +1564,7 @@ namespace nana
 		internal_scope_guard lock;
 		auto & ess = _m_ess();
 		auto new_cat_ptr = ess.lister.create_cat(cat.position(), std::move(str));
+		new_cat_ptr->ibox_show_ = ibox_show_;
 		return cat_proxy{ &ess, new_cat_ptr };
 	}
 
