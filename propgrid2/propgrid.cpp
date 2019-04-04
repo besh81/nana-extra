@@ -8,6 +8,7 @@
 
 #include "propgrid.h"
 
+
 namespace nana
 {
 
@@ -256,8 +257,9 @@ void cProp::value( const std::string& v )
 }
 
 cPropGrid::cPropGrid( panel<true>& parent )
-    : myParent( parent )
+    : myParent( parent, {0,0,parent.size().width,parent.size().height}, {0,0,300,500} )
 {
+
     drawing dw{myParent};
     dw.draw([this](paint::graphics& graph)
     {
@@ -291,6 +293,8 @@ void cPropGrid::visible()
     // convert from rows to pixels
     myVisibleHeight *= propHeight();
     myVisibleHeight += 2 * margin() - 1;
+
+    myParent.size( {propWidth(),myVisibleHeight});
 
     // force grid margin redraw
     nana::API::refresh_window ( myParent );
