@@ -124,80 +124,57 @@ namespace nana
 
 class cPropGrid;
 
+/** \brief Display and edit an individual name-value property
+
+There are no public constructors.  Application code should not attempt to construct a property.
+Rather, use the methods of cPropGrid to add new properties: cPropGrid::string(), cPropGrid::category, etc.
+*/
 class cProp
 {
 public:
-    cProp( cPropGrid& grid,
-           const std::string& name,
-           const std::string& value,
-           bool bvalue );
-    cProp( cPropGrid& grid,
-           const std::string& name );
-    cProp( cPropGrid& grid,
-           const std::string& name,
-           const std::vector< std::string >& vChoice );
-    cProp( cPropGrid& grid,
-           const std::string& name,
-           std::function<void()> f);
+
     ~cProp()
     {
         delete myTextbox;
         delete myLabel;
         delete myPanel;
     }
-    bool IsCategory()
-    {
-        return myType == eType::category;
-    }
-    std::string Name()
+    /// \brief Get Name of property
+    std::string name()
     {
         return myName;
     }
-    /** Get value of string property
-        \return value
-    */
+    /// \brief Get value of string property
     std::string value()
     {
         return myValue;
     }
-    /** Set value of string property
+    bool valueBool()
+    {
+        return myValueBool;
+    }
+
+    /** \brief Set value of string property
         \param[in] v value to set
     */
     void value( const std::string& v );
 
+    /// \brief get name of category that contains property.
     std::string CatName()
     {
         return myCatName;
     }
-    void Expand( bool f )
-    {
-        if( myType != eType::category )
-            return;
-        myCheckbox->check( f );
-    }
-    bool IsExpanded()
-    {
-        return myCheckbox->checked();
-    }
-    /** Show property when category is expanded or collapsed
-        \param[in] f true to show, false to hide
-        \param[out] f true if expanded category
-        \param[in] index of preceding visible properties
-        \param[out] index incremented index
-    */
-    void visible( bool& f, int& index );
 
-    /** Add helpful description that pops up when mouse hovers over property name
+    /** \brief Add helpful description that pops up when mouse hovers over property name
         \param[in] msg to pop up
     */
     void tooltip( const std::string& msg );
 
-    /** Get menu which pops-up when user presses mouse right button on property label
+    /** \brief Get menu which pops-up when user presses mouse right button on property label
 
     Use this to add items to the menu
 
     <pre>
-        // find property and add item to the pop-up menu
         pg.find( "category_name", "property_name" )->menu().append("Test",[](menu::item_proxy& ip)
         {
             msgbox m("popup menu extra");
@@ -211,6 +188,9 @@ public:
     }
 
 private:
+
+    friend cPropGrid;
+
     cPropGrid& myGrid;
     nana::panel<true> * myPanel;
     nana::label * myLabel;
@@ -235,8 +215,48 @@ private:
         button,
     } myType;
 
+    cProp( cPropGrid& grid,
+           const std::string& name,
+           const std::string& value,
+           bool bvalue );
+    cProp( cPropGrid& grid,
+           const std::string& name );
+    cProp( cPropGrid& grid,
+           const std::string& name,
+           const std::vector< std::string >& vChoice );
+    cProp( cPropGrid& grid,
+           const std::string& name,
+           std::function<void()> f);
+
     /// Common constructor for all properties except category typw
     void PanelLabel();
+
+    /** \brief Make properties in category visible or not
+    \param[in] f true id properties are to be visible
+    */
+    void Expand( bool f )
+    {
+        if( myType != eType::category )
+            return;
+        myCheckbox->check( f );
+    }
+
+    bool IsExpanded()
+    {
+        return myCheckbox->checked();
+    }
+    /** Show property when category is expanded or collapsed
+        \param[in] f true to show, false to hide
+        \param[out] f true if expanded category
+        \param[in] index of preceding visible properties
+        \param[out] index incremented index
+    */
+    void visible( bool& f, int& index );
+
+    bool IsCategory()
+    {
+        return myType == eType::category;
+    }
 };
 
 /// A class to hold properties and display them for editing in a grid
@@ -246,6 +266,12 @@ class cPropGrid
     friend cProp;
 
 public:
+    /** \brief CTOR
+        \param[in] parent panel where grid will be seen
+
+        The parent panel may be smaller than the property grid with all categories expanded
+        Scroll bars allow user to move through entire visible grid using parent panel to view segments of the grid
+    */
     cPropGrid( panel<true>& parent );
 
     ~cPropGrid()
@@ -253,49 +279,49 @@ public:
         for( auto p : myProp )
             delete p;
     }
-    /** Add string property
+    /** \brief Add string property.
         \param[in] name
         \param[in] value
-        \return pointer to property if found, otherwise nullptr
+        \return pointer to property
     */
     cProp* string(
         const std::string& name,
         const std::string& value );
 
-    /** Add checkbox property
+    /** \brief Add checkbox property
         \param[in] name
         \param[in] value
-        \return pointer to property if found, otherwise nullptr
+        \return pointer to property
     */
     cProp* check(
         const std::string& name,
         bool value );
 
-    /** Add category
+    /** \brief Add category
         \param[in] name
     */
     void category(
         const std::string& name );
 
-    /** Add choice property
+    /** \brief Add choice property
         \param[in] name
         \param[in] vChoice vector of possible choices
-        \return pointer to property if found, otherwise nullptr
+        \return pointer to property
     */
     cProp* choice(
         const std::string name,
         const std::vector< std::string >& vChoice );
 
-    /** Add button property
+    /** \brief Add button property
             \param[in] name
             \param[in] f function to call when button clicked
-            \return pointer to property if found, otherwise nullptr
+            \return pointer to property
     */
     cProp* button(
         const std::string name,
         std::function<void()> f );
 
-    /** Find property by category and name
+    /** \brief Find property by category and name
         \param[in] category name of category
         \param[in] name name of property
         \return pointer to property if found, otherwise nullptr
@@ -304,14 +330,14 @@ public:
         const std::string& category,
         const std::string& name );
 
-    /** Set visibility of properties in a category
+    /** \brief Set visibility of properties in a category
         \param[in] name of category
         \param[in] f true if properties should be visible, default true
     */
     void Expand(
         const std::string& name, bool f = true );
 
-    /** Register function to be called wnen property changes value
+    /** \brief Register function to be called wnen property changes value
         \param[in] f function to be called
 
     Function signature: void f( cProp* prop )

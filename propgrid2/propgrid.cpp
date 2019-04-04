@@ -278,7 +278,7 @@ cPropGrid::cPropGrid( panel<true>& parent )
 void cPropGrid::Expand( const std::string& name, bool f )
 {
     for( auto p : myProp )
-        if( p->Name() == name )
+        if( p->name() == name )
         {
             if( ! p->IsCategory() )
                 return;
@@ -365,12 +365,12 @@ cProp * cPropGrid::find(
     {
         if( p->IsCategory() )
         {
-            cat = p->Name();
+            cat = p->name();
             continue;
         }
         if( cat != category )
             continue;
-        if( p->Name() == name )
+        if( p->name() == name )
             return p;
     }
     return nullptr;

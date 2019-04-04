@@ -39,7 +39,7 @@ int main()
     pg.change_event([]( cProp& prop )
     {
         std::cout
-                << "Property "  << prop.Name()
+                << "Property "  << prop.name()
                 << " in "       << prop.CatName()
                 << " value is " << prop.value()
                 << "\n";
