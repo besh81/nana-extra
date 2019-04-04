@@ -301,16 +301,14 @@ void cPropGrid::Expand( const std::string& name, bool f )
 void cPropGrid::visible()
 {
     bool fexp = true;
-    myVisibleHeight = 0;
+    int VisibleRows = 0;
     for( auto p : myProp )
     {
-        p->visible( fexp, myVisibleHeight );
+        p->visible( fexp, VisibleRows );
     }
-    // convert from rows to pixels
-    myVisibleHeight *= propHeight();
-    myVisibleHeight += 2 * margin() - 1;
 
-    myGridPanel.size( {propWidth(),myVisibleHeight});
+    // resize grid panel to exactly hold the visible properties
+    myGridPanel.size( { propWidth(),  VisibleRows * propHeight() + 2 * margin() - 1 });
 
     // force grid margin redraw
     nana::API::refresh_window_tree( myParent );

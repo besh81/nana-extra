@@ -372,7 +372,6 @@ private:
     std::vector< cProp* > myProp;
     std::function<void( cProp& prop )> myChangeEventFunction;
     std::string myCurCatName;
-    int myVisibleHeight;
 
     /// Move visible properties to required screen locations when categories expand or collapse
     void visible();
