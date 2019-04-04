@@ -11,7 +11,7 @@ A specialized grid for editing properties. It comes with a list of ready-to-use 
 
 ## propgrid2
 
-<ing src="https://github.com/JamesBremner/nana-extra/blob/master/screenshots/propgrid2.png
+<img src="https://github.com/JamesBremner/nana-extra/blob/master/screenshots/propgrid2.png">
 
 A simple property editing grid.
 
