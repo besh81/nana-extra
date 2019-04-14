@@ -10,6 +10,18 @@ A specialized grid for editing properties. It comes with a list of ready-to-use 
 
 <img src="https://github.com/besh81/nana-extra/blob/master/screenshots/propertygrid.png" alt="propertygrid" height="450"></a>
 
+## propgrid2
+
+<img src="https://github.com/JamesBremner/nana-extra/blob/master/screenshots/propgrid2.png">
+
+A simple property editing grid.
+
+This uses only high level nana widgets.  It is simpler to use and many times simpler to modify since the implementation
+uses no arcane nana implementation details.
+
+For comparison, [propertygrid](https://github.com/besh81/nana-extra/wiki/propertygrid) is implemented using 1870 lines of code
+( not counting comments ) whereas propgrid2 needs only 355 lines.  The features supported by the two grids are quite similar.
+
 ## [plot2d](https://github.com/besh81/nana-extra/wiki/plot2d)
 #### Author: [JamesBremner](https://github.com/JamesBremner)
 
