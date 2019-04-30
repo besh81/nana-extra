@@ -158,6 +158,9 @@ public:
     */
     void value( const std::string& v );
 
+    /// \brief Set value of check propery
+    void value( bool f );
+
     /// \brief get name of category that contains property.
     std::string catName()
     {

@@ -232,6 +232,14 @@ void cProp::value( const std::string& v )
     myTextbox->caption( v );
 }
 
+void cProp::value( bool f )
+{
+    if( myType != eType::check )
+        return;
+    myValueBool = f;
+    myCheckbox->check( f );
+}
+
 std::string cProp::value()
 {
     if( myType == eType::check )
