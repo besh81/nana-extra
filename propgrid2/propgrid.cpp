@@ -268,6 +268,11 @@ cPropGrid::cPropGrid( panel<true>& parent )
         graph.round_rectangle( { 1,1, myParent.size().width-2,myParent.size().height-2},
                                3,3, colors::black, false, colors::black );
     });
+
+    // register null change event function
+    change_event([]( cProp& prop )
+        {
+        });
 }
 
 void cPropGrid::Expand( const std::string& name, bool f )
