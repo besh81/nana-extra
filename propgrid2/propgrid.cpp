@@ -305,6 +305,7 @@ cProp* cPropGrid::string( const std::string& name,
                              name,
                              value,
                              false ) );
+    visible();
     return myProp.back();
 }
 
@@ -316,6 +317,7 @@ cProp* cPropGrid::check( const std::string& name,
                              name,
                              "",
                              value ) );
+    visible();
     return myProp.back();
 }
 
@@ -325,6 +327,7 @@ void cPropGrid::category( const std::string& name )
                              *this,
                              name ) );
     myCurCatName = name;
+    visible();
 }
 
 cProp* cPropGrid::choice(
@@ -335,6 +338,7 @@ cProp* cPropGrid::choice(
                              *this,
                              name,
                              vChoice ));
+    visible();
     return myProp.back();
 }
 
@@ -346,6 +350,7 @@ cProp* cPropGrid::button(
                              *this,
                              name,
                              f ));
+    visible();
     return myProp.back();
 }
 
