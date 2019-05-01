@@ -226,10 +226,17 @@ void cProp::tooltip( const std::string& msg )
 
 void cProp::value( const std::string& v )
 {
-    if( myType != eType::string )
-        return;
-    myValue = v;
-    myTextbox->caption( v );
+    switch( myType )
+    {
+    case eType::string:
+        myValue = v;
+        myTextbox->caption( v );
+        break;
+    case eType::choice:
+        myValue = v;
+        myCombox->caption( v );
+        break;
+    }
 }
 
 void cProp::value( bool f )
@@ -271,8 +278,8 @@ cPropGrid::cPropGrid( panel<true>& parent )
 
     // register null change event function
     change_event([]( cProp& prop )
-        {
-        });
+    {
+    });
 }
 
 void cPropGrid::Expand( const std::string& name, bool f )
