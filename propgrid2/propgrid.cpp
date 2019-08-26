@@ -226,10 +226,25 @@ void cProp::tooltip( const std::string& msg )
 
 void cProp::value( const std::string& v )
 {
-    if( myType != eType::string )
+    switch( myType )
+    {
+    case eType::string:
+        myValue = v;
+        myTextbox->caption( v );
+        break;
+    case eType::choice:
+        myValue = v;
+        myCombox->caption( v );
+        break;
+    }
+}
+
+void cProp::value( bool f )
+{
+    if( myType != eType::check )
         return;
-    myValue = v;
-    myTextbox->caption( v );
+    myValueBool = f;
+    myCheckbox->check( f );
 }
 
 std::string cProp::value()
@@ -259,6 +274,11 @@ cPropGrid::cPropGrid( panel<true>& parent )
                                3,3, colors::black, false, colors::black );
         graph.round_rectangle( { 1,1, myParent.size().width-2,myParent.size().height-2},
                                3,3, colors::black, false, colors::black );
+    });
+
+    // register null change event function
+    change_event([]( cProp& prop )
+    {
     });
 }
 
@@ -297,6 +317,7 @@ cProp* cPropGrid::string( const std::string& name,
                              name,
                              value,
                              false ) );
+    visible();
     return myProp.back();
 }
 
@@ -308,6 +329,7 @@ cProp* cPropGrid::check( const std::string& name,
                              name,
                              "",
                              value ) );
+    visible();
     return myProp.back();
 }
 
@@ -317,6 +339,7 @@ void cPropGrid::category( const std::string& name )
                              *this,
                              name ) );
     myCurCatName = name;
+    visible();
 }
 
 cProp* cPropGrid::choice(
@@ -327,6 +350,7 @@ cProp* cPropGrid::choice(
                              *this,
                              name,
                              vChoice ));
+    visible();
     return myProp.back();
 }
 
@@ -338,6 +362,7 @@ cProp* cPropGrid::button(
                              *this,
                              name,
                              f ));
+    visible();
     return myProp.back();
 }
 
