@@ -9,10 +9,17 @@ int main()
 {
     using namespace nana;
 
-    form fm( 0, nana::size{ 400, 500 } );
-    panel<true> pnl( fm, { 20, 20, 300, 400 });
-    nana::label status( fm, nana::rectangle{ 20, 450, 200, 25 }, true );
+
+
+    form fm( 0, nana::size{ 400, 600 } );
+
+    nana::paint::font fnew( "Segoe UI", 18 );
+    fnew.set_default();
+
+    panel<true> pnl( fm, { 20, 20, 300, 600 });
+    nana::label status( fm, nana::rectangle{ 20, 650, 200, 25 }, true );
     cPropGrid pg( pnl );
+    pg.PropHeight( 32 );
     pg.category( "Strings" );
     pg.string( "test1", "1" )->tooltip( "helpful description" );
     pg.string( "test2", "2" );
@@ -31,10 +38,10 @@ int main()
 
     pg.category( "Dialogs" );
     pg.button( "dialog", []
-              {
-                    msgbox m("Button Dialog");
-                    m.show();
-              });
+    {
+        msgbox m("Button Dialog");
+        m.show();
+    });
 
     pg.Expand("Bools",false);
 
@@ -42,9 +49,9 @@ int main()
     {
         std::stringstream ss;
         ss        << "Property "  << prop.name()
-                << " in "       << prop.catName()
-                << " value is " << prop.value()
-                << "\n";
+                  << " in "       << prop.catName()
+                  << " value is " << prop.value()
+                  << "\n";
         status.caption( ss.str() );
     });
 
