@@ -117,11 +117,14 @@ void trace::add( double x, double y )
 
 void trace::bounds( double& tmin, double& tmax )
 {
-    auto result = std::minmax_element(
-                      myY.begin(),
-                      myY.end());
-    tmin = *result.first;
-    tmax = *result.second;
+    if( myX.size() && myY.size() )
+    {
+        auto result = std::minmax_element(
+                          myY.begin(),
+                          myY.end());
+        tmin = *result.first;
+        tmax = *result.second;
+    }
 }
 
 void trace::update( paint::graphics& graph )
@@ -267,7 +270,8 @@ void axis::update( paint::graphics& graph )
                     point(5, ymn_px),
                     colors::black );
         if( myfGrid )
-            for( int k=5; k<graph.width(); k=k+10 ) {
+            for( int k=5; k<graph.width(); k=k+10 )
+            {
                 graph.set_pixel(k, y0_px, colors::blue );
                 graph.set_pixel(k+1, y0_px, colors::blue );
             }
