@@ -265,6 +265,7 @@ cPropGrid::cPropGrid( panel<true>& parent )
     0,0,parent.size().width,parent.size().height
 }, {0,0,300,500} )
 , myParent( parent )
+, myPropHeight( 22 )
 {
 
     drawing dw{ myParent };

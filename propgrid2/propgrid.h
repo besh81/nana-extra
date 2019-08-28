@@ -77,7 +77,7 @@ public:
         });
 
         // arrange visible panel with scrolls at right and bottom
-        myPlace.div("<vert <<panel><scroll_vert weight=16>> <scroll_horiz weight=16>>>");
+        myPlace.div("<vert <<panel><scroll_vert weight=16>> <scroll_horiz weight=16>>");
         myPlace["panel"] << myVisible;
         myPlace["scroll_vert"] << myScrollVert;
         myPlace["scroll_horiz"] << myScrollHoriz;
@@ -370,6 +370,15 @@ public:
         myChangeEventFunction = f;
     }
 
+    /** \brief Change height of a property row
+        \param[in] pixels
+    Use when font size is changed
+    */
+    void PropHeight( int pixels )
+    {
+        myPropHeight = pixels;
+    }
+
 private:
 
     panel<true>& myParent;
@@ -377,6 +386,7 @@ private:
     std::vector< cProp* > myProp;
     std::function<void( cProp& prop )> myChangeEventFunction;
     std::string myCurCatName;
+    int myPropHeight;               // Height of a property row in pixels
 
     /// Move visible properties to required screen locations when categories expand or collapse
     void visible();
@@ -407,9 +417,9 @@ private:
     {
         return 300;
     }
-    int propHeight()
+    int propHeight() const
     {
-        return 22;
+        return myPropHeight;
     }
     int margin()
     {
