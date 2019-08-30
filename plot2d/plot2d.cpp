@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include <nana/gui.hpp>
 #include "plot2d.h"
 namespace nana
@@ -63,27 +64,37 @@ void plot::CalcScale( int w, int h )
     h *= 0.95;
 
     int maxCount = 0;
-    myTrace[0]->bounds( myMinY, myMaxY );
+    myTrace[0]->bounds(
+        myMinX, myMaxX,
+        myMinY, myMaxY );
     for( auto& t : myTrace )
     {
         if( t->size() > maxCount )
             maxCount = t->size();
-        double tmin, tmax;
-        t->bounds( tmin, tmax );
-        if( tmin < myMinY )
-            myMinY = tmin;
-        if( tmax > myMaxY )
-            myMaxY = tmax;
+        double txmin, txmax, tymin, tymax;
+        t->bounds( txmin, txmax, tymin, tymax );
+        if( txmin < myMinX )
+            myMinX = txmin;
+        if( txmax > myMaxX )
+            myMaxX = txmax;
+        if( tymin < myMinY )
+            myMinY = tymin;
+        if( tymax > myMaxY )
+            myMaxY = tymax;
     }
     if( ! maxCount )
         return;
-    myXinc = (float)w / maxCount;
-    if( myMaxY == myMinY )
-        myScale = 1;
+    if( fabs( myMaxX - myMinX) < 0.0001 )
+        myXScale = 1;
     else
-        myScale = 0.9 * h / ( myMaxY - myMinY );
+        myXScale = 0.9 * w / ( myMaxX - myMinX );
+    if( fabs( myMaxY - myMinY ) < 0.0001 )
+        myYScale = 1;
+    else
+        myYScale = 0.9 * h / ( myMaxY - myMinY );
+
     myXOffset = 0.05 * w;
-    myYOffset = h + myScale * myMinY;
+    myYOffset = h + myYScale * myMinY;
 
     //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
 }
@@ -115,21 +126,39 @@ void trace::add( double x, double y )
     myY.push_back( y );
 }
 
-void trace::bounds( double& tmin, double& tmax )
+void trace::bounds(
+    double& txmin, double& txmax,
+    double& tymin, double& tymax )
 {
-    auto result = std::minmax_element(
-                      myY.begin(),
-                      myY.end());
-    tmin = *result.first;
-    tmax = *result.second;
+    if( myY.size() )
+    {
+        if( myType == eType::realtime || myX.size() == 0 )
+        {
+            txmin = 0;
+            txmax = myY.size();
+        }
+        else
+        {
+            auto result = std::minmax_element(
+                              myX.begin(),
+                              myX.end());
+            txmin = *result.first;
+            txmax = *result.second;
+        }
+        auto result = std::minmax_element(
+                     myY.begin(),
+                     myY.end());
+        tymin = *result.first;
+        tymax = *result.second;
+    }
 }
 
 void trace::update( paint::graphics& graph )
 {
     bool first = true;
-    float x    = myPlot->XOffset();
+    int xi    = 0;
     float xinc = myPlot->xinc();
-    double prev;
+    double prevX, prev;
 
 
     switch( myType )
@@ -140,24 +169,26 @@ void trace::update( paint::graphics& graph )
         for( auto y : myY )
         {
             // scale
-            double ys =  myPlot->Y2Pixel( y );
+            double x  = myPlot->X2Pixel( xi );
+            double ys = myPlot->Y2Pixel( y );
 
             if( first )
             {
                 first = false;
+                prevX = x;
                 prev = ys;
                 continue;
             }
 
             // draw line from previous to this data point
             graph.line(
-                point(x, prev),
-                point(x+xinc, ys),
+                point(prevX, prev),
+                point(x, ys),
                 myColor);
 
-            x += xinc;
+            prevX = x;
             prev = ys;
-
+            xi++;
         }
         break;
 
@@ -165,9 +196,8 @@ void trace::update( paint::graphics& graph )
 
         for( int k = 0; k < (int)myX.size(); k++ )
         {
-            int x = (int) ( myPlot->XOffset() + xinc * myX[k] );
             graph.rectangle(
-                rectangle{ x-5,  myPlot->Y2Pixel( myY[ k ] )-5,
+                rectangle{ myPlot->X2Pixel( myX[ k ] )-5,  myPlot->Y2Pixel( myY[ k ] )-5,
                            10, 10 },
                 false,
                 myColor );
@@ -177,7 +207,6 @@ void trace::update( paint::graphics& graph )
     case eType::realtime:
 
     {
-
         // loop over data points
 
         // they are stored in a circular buffer
@@ -185,6 +214,7 @@ void trace::update( paint::graphics& graph )
         int yidx = myRealTimeNext;
         do
         {
+            double x = myPlot->X2Pixel( yidx );
             double y = myPlot->Y2Pixel( myY[ yidx ] );
 
             // the next data point
@@ -196,16 +226,17 @@ void trace::update( paint::graphics& graph )
             if( first )
             {
                 first = false;
+                prevX = x;
                 prev = y;
                 continue;
             }
             // draw line from previous to this data point
             graph.line(
-                point( x, prev ),
-                point( x+xinc, y ),
+                point( prevX, prev ),
+                point( x, y ),
                 myColor);
 
-            x += xinc;
+            prevX = x;;
             prev = y;
 
         }
@@ -267,7 +298,8 @@ void axis::update( paint::graphics& graph )
                     point(5, ymn_px),
                     colors::black );
         if( myfGrid )
-            for( int k=5; k<graph.width(); k=k+10 ) {
+            for( int k=5; k<graph.width(); k=k+10 )
+            {
                 graph.set_pixel(k, y0_px, colors::blue );
                 graph.set_pixel(k+1, y0_px, colors::blue );
             }

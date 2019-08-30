@@ -140,7 +140,9 @@ private:
     }
 
     /// min and max values in trace
-    void bounds( double& min, double& max );
+    void bounds(
+        double& txmin, double& txmax,
+        double& tymin, double& tymax );
 
     /// draw
     void update( paint::graphics& graph );
@@ -256,9 +258,13 @@ public:
         myAxis->Grid( enable );
     }
 
+    int X2Pixel( double x ) const
+    {
+        return myXOffset + myXScale * x;
+    }
     int Y2Pixel( double y ) const
     {
-        return myYOffset - myScale * y;
+        return myYOffset - myYScale * y;
     }
 
     float xinc()
@@ -273,10 +279,10 @@ public:
     {
         return myMaxY;
     }
-    double Scale()
-    {
-        return myScale;
-    }
+//    double Scale()
+//    {
+//        return myScale;
+//    }
     int XOffset()
     {
         return myXOffset;
@@ -314,8 +320,9 @@ private:
     std::vector< trace* > myTrace;
 
     float myXinc;
+    double myMinX, myMaxX;
     double myMinY, myMaxY;
-    double myScale;
+    double myXScale, myYScale;
     int myXOffset;
     int myYOffset;
 
