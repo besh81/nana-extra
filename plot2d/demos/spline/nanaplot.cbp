@@ -43,6 +43,8 @@
 		<Linker>
 			<Add library="nana" />
 			<Add library="stdc++fs" />
+			<Add library="gdi32" />
+			<Add library="comdlg32" />
 			<Add directory="$(#nana.lib)" />
 		</Linker>
 		<Unit filename="../../plot2d.cpp" />
