@@ -247,6 +247,15 @@ void cProp::value( bool f )
     myCheckbox->check( f );
 }
 
+void cProp::change( const std::vector< std::string >& vChoice )
+{
+    if( myType != eType::choice )
+        return;
+    myCombox->clear();
+    for( const auto& s : vChoice )
+        myCombox->push_back( s );
+}
+
 std::string cProp::value()
 {
     if( myType == eType::check )

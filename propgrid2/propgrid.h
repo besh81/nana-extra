@@ -161,6 +161,9 @@ public:
     /// \brief Set value of check propery
     void value( bool f );
 
+    /// \brief Change available choices
+    void change( const std::vector< std::string >& vChoice );
+
     /// \brief get name of category that contains property.
     std::string catName()
     {
