@@ -78,7 +78,10 @@ public:
         myColor = clr;
     }
 
-
+    int size()
+    {
+        return (int) myY.size();
+    }
 
 private:
 
@@ -132,11 +135,6 @@ private:
         myType = eType::scatter;
         myY.clear();
         myX.clear();
-    }
-
-    int size()
-    {
-        return (int) myY.size();
     }
 
     /// min and max values in trace
