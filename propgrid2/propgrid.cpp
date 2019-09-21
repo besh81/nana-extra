@@ -223,6 +223,18 @@ void cProp::tooltip( const std::string& msg )
     myLabel->tooltip( msg );
 }
 
+void cProp::enable( bool f )
+{
+    nana::color bg = nana::colors::white;
+    if( ! f )
+        bg = nana::colors::light_gray;
+    if( myType == eType::string ) {
+        myTextbox->editable( false );
+        myTextbox->bgcolor( bg );
+    }
+}
+
+
 
 void cProp::value( const std::string& v )
 {
@@ -302,6 +314,17 @@ void cPropGrid::Expand( const std::string& name, bool f )
             p->Expand( f );
         }
     visible();
+}
+void cPropGrid::enable(
+    const std::string& name,
+    bool f )
+{
+    for( auto p : myProp ) {
+        if( p->catName() == name )
+        {
+            p->enable( f );
+        }
+    }
 }
 
 void cPropGrid::visible()
