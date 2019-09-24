@@ -223,6 +223,10 @@ void cProp::tooltip( const std::string& msg )
     myLabel->tooltip( msg );
     switch( myType )
     {
+    case eType::category:
+        myPanel->tooltip( msg );
+        break;
+
     case eType::string:
         myTextbox->tooltip( msg );
         break;
@@ -378,13 +382,14 @@ cProp* cPropGrid::check( const std::string& name,
     return myProp.back();
 }
 
-void cPropGrid::category( const std::string& name )
+cProp* cPropGrid::category( const std::string& name )
 {
     myProp.emplace_back( new cProp(
                              *this,
                              name ) );
     myCurCatName = name;
     visible();
+    return myProp.back();
 }
 
 cProp* cPropGrid::choice(

@@ -316,7 +316,7 @@ public:
     /** \brief Add category
         \param[in] name
     */
-    void category(
+    cProp* category(
         const std::string& name );
 
     /** \brief Add choice property
