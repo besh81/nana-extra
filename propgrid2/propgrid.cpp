@@ -175,7 +175,8 @@ void cProp::PanelLabel()
     myLabel->events().mouse_down([this](const arg_mouse& arg)
     {
         if ( arg.right_button )
-            myMenu.popup_await(myGrid.parent(), arg.pos.x, arg.pos.y);
+            myMenu.popup_await(
+                *myPanel,5,5);
     });
 
     // draw box around property
