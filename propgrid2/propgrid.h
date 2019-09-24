@@ -161,6 +161,9 @@ public:
     /// \brief Set value of check propery
     void value( bool f );
 
+    /// \brief Change available choices
+    void change( const std::vector< std::string >& vChoice );
+
     /// \brief get name of category that contains property.
     std::string catName()
     {
@@ -191,6 +194,12 @@ public:
     {
         return myMenu;
     }
+
+    /** \brief Enable/Disable property
+        \param[in] f true if property is to be enabled, default true
+        TODO: implement for property types other than string
+    */
+    void enable( bool f = true );
 
 private:
 
@@ -342,6 +351,13 @@ public:
         \param[in] f true if properties should be visible, default true
     */
     void Expand(
+        const std::string& name, bool f = true );
+
+    /** \brief Enable/Disable properties in a category
+        \param[in] name of category
+        \param[in] f true if properties should be enabled, default true
+    */
+    void enable(
         const std::string& name, bool f = true );
 
     /** \brief Register function to be called wnen property changes value

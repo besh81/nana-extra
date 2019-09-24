@@ -221,7 +221,30 @@ void cProp::visible( bool& f, int& index )
 void cProp::tooltip( const std::string& msg )
 {
     myLabel->tooltip( msg );
+    switch( myType )
+    {
+    case eType::string:
+        myTextbox->tooltip( msg );
+        break;
+
+    case eType::choice:
+        myCombox->tooltip( msg );
+        break;
+    }
 }
+
+void cProp::enable( bool f )
+{
+    nana::color bg = nana::colors::white;
+    if( ! f )
+        bg = nana::colors::light_gray;
+    if( myType == eType::string )
+    {
+        myTextbox->editable( false );
+        myTextbox->bgcolor( bg );
+    }
+}
+
 
 
 void cProp::value( const std::string& v )
@@ -245,6 +268,15 @@ void cProp::value( bool f )
         return;
     myValueBool = f;
     myCheckbox->check( f );
+}
+
+void cProp::change( const std::vector< std::string >& vChoice )
+{
+    if( myType != eType::choice )
+        return;
+    myCombox->clear();
+    for( const auto& s : vChoice )
+        myCombox->push_back( s );
 }
 
 std::string cProp::value()
@@ -293,6 +325,18 @@ void cPropGrid::Expand( const std::string& name, bool f )
             p->Expand( f );
         }
     visible();
+}
+void cPropGrid::enable(
+    const std::string& name,
+    bool f )
+{
+    for( auto p : myProp )
+    {
+        if( p->catName() == name )
+        {
+            p->enable( f );
+        }
+    }
 }
 
 void cPropGrid::visible()

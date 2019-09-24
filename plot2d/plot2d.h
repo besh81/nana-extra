@@ -78,7 +78,10 @@ public:
         myColor = clr;
     }
 
-
+    int size()
+    {
+        return (int) myY.size();
+    }
 
 private:
 
@@ -134,11 +137,6 @@ private:
         myX.clear();
     }
 
-    int size()
-    {
-        return (int) myY.size();
-    }
-
     /// min and max values in trace
     void bounds(
         double& txmin, double& txmax,
@@ -155,14 +153,7 @@ private:
 class axis
 {
 public:
-    axis( plot * p );
-
-    ~axis()
-    {
-        delete myLabelMin;
-        delete myLabelMax;
-        delete myLabelZero;
-    }
+    axis( plot * p, bool xaxis = false );
 
     /// draw
     void update( paint::graphics& graph );
@@ -174,10 +165,11 @@ public:
 
 private:
     plot * myPlot;
-    label * myLabelMin;
-    label * myLabelMax;
-    label * myLabelZero;
+    label myLabelMin;
+    label myLabelMax;
+    label myLabelZero;
     bool myfGrid;
+    bool myfX;              // true for x-axis
 };
 
 
@@ -207,6 +199,7 @@ public:
     ~plot()
     {
         delete myAxis;
+        delete myAxisX;
     }
 
     /** \brief Add static trace
@@ -271,6 +264,14 @@ public:
     {
         return myXinc;
     }
+    double minX()
+    {
+        return myMinX;
+    }
+    double maxX()
+    {
+        return myMaxX;
+    }
     double minY()
     {
         return myMinY;
@@ -279,10 +280,6 @@ public:
     {
         return myMaxY;
     }
-//    double Scale()
-//    {
-//        return myScale;
-//    }
     int XOffset()
     {
         return myXOffset;
@@ -315,6 +312,7 @@ private:
     window myParent;
 
     axis * myAxis;
+    axis * myAxisX;
 
     /// plot traces
     std::vector< trace* > myTrace;

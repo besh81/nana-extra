@@ -14,6 +14,7 @@ plot::plot( window parent )
     RegisterDrawingFunction();
 
     myAxis = new axis( this );
+    myAxisX = new axis( this, true );
 }
 
 trace& plot::AddScatterTrace()
@@ -48,6 +49,7 @@ void plot::RegisterDrawingFunction()
 
         // draw axis
         myAxis->update( graph );
+        myAxisX->update( graph );
 
         // loop over traces
         for( auto t : myTrace )
@@ -94,7 +96,7 @@ void plot::CalcScale( int w, int h )
         myYScale = 0.9 * h / ( myMaxY - myMinY );
 
     myXOffset = 0.05 * w;
-    myYOffset = h + myYScale * myMinY;
+    myYOffset = h - 10 + myYScale * myMinY;
 
     //std::cout << myMinY <<" "<< myMaxY <<" "<< myScale;
 }
@@ -146,8 +148,8 @@ void trace::bounds(
             txmax = *result.second;
         }
         auto result = std::minmax_element(
-                     myY.begin(),
-                     myY.end());
+                          myY.begin(),
+                          myY.end());
         tymin = *result.first;
         tymax = *result.second;
     }
@@ -250,77 +252,108 @@ void trace::update( paint::graphics& graph )
     }
 }
 
-axis::axis( plot * p )
+axis::axis( plot * p, bool xaxis )
     : myPlot( p )
     , myfGrid( false )
+    , myLabelMin( myPlot->parent() )
+    , myLabelMax( myPlot->parent() )
+    , myLabelZero( myPlot->parent() )
+    , myfX( xaxis )
 {
-    myLabelMin = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
-    myLabelMin->caption("test");
-    myLabelMax = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
-    myLabelMax->caption("test");
-    myLabelZero = new label( myPlot->parent(),  rectangle{ 10, 10, 50, 15 } );
-    myLabelZero->caption("0.0");
+    myLabelMin.move( { 10, 10, 50, 15 } );
+    myLabelMin.caption("test");
+    myLabelMax.move( { 10, 10, 50, 15 } );
+    myLabelMax.caption("test");
+    myLabelZero.move( { 10, 10, 50, 15 } );
+    myLabelZero.caption("0.0");
 }
 
 void axis::update( paint::graphics& graph )
 {
-    double mn = 10 * ( myPlot->minY() / 10 );
-    double mx = 10 * ( myPlot->maxY() / 10 );
-    if( mx-mn < 2 )
+    if( ! myfX )
     {
-        mn = myPlot->minY();
-        mx = myPlot->maxY();
-    }
-    int ymn_px = myPlot->Y2Pixel( mn );
-    myLabelMin->caption(std::to_string(mn));
-    myLabelMin->move( 5,  ymn_px );
-
-    int ymx_px = myPlot->Y2Pixel( mx );
-    myLabelMax->caption(std::to_string( mx ));
-    myLabelMax->move( 5,   ymx_px - 15 );
-
-    graph.line( point( 2, ymn_px ),
-                point( 2, ymx_px ),
-                colors::black );
-
-    if( mn * mx < 0 )
-    {
-        graph.line( point(2, ymx_px),
-                    point(5, ymx_px),
-                    colors::black );
-        int y0_px = myPlot->Y2Pixel( 0 );
-        myLabelZero->move( 5,   y0_px - 15 );
-        myLabelZero->show();
-        graph.line( point(2, y0_px),
-                    point(5, y0_px),
-                    colors::black );
-        graph.line( point(2, ymn_px),
-                    point(5, ymn_px),
-                    colors::black );
-        if( myfGrid )
-            for( int k=5; k<graph.width(); k=k+10 )
-            {
-                graph.set_pixel(k, y0_px, colors::blue );
-                graph.set_pixel(k+1, y0_px, colors::blue );
-            }
-    }
-    else
-    {
-        myLabelZero->hide();
-        int yinc = ( ymn_px - ymx_px ) / 4;
-        for( int ky = 0; ky < 4; ky++ )
+        double mn = 10 * ( myPlot->minY() / 10 );
+        double mx = 10 * ( myPlot->maxY() / 10 );
+        if( mx-mn < 2 )
         {
-            int y = ymx_px + ky * yinc;
-            graph.line( point(2, y),
-                        point(5, y),
+            mn = myPlot->minY();
+            mx = myPlot->maxY();
+        }
+        int ymn_px = myPlot->Y2Pixel( mn );
+        myLabelMin.caption(std::to_string(mn));
+        myLabelMin.move( 5,  ymn_px );
+
+        int ymx_px = myPlot->Y2Pixel( mx );
+        myLabelMax.caption(std::to_string( mx ));
+        myLabelMax.move( 5,   ymx_px - 15 );
+
+        graph.line( point( 2, ymn_px ),
+                    point( 2, ymx_px ),
+                    colors::black );
+
+        if( mn * mx < 0 )
+        {
+            graph.line( point(2, ymx_px),
+                        point(5, ymx_px),
+                        colors::black );
+            int y0_px = myPlot->Y2Pixel( 0 );
+            myLabelZero.move( 5,   y0_px - 15 );
+            myLabelZero.show();
+            graph.line( point(2, y0_px),
+                        point(5, y0_px),
+                        colors::black );
+            graph.line( point(2, ymn_px),
+                        point(5, ymn_px),
                         colors::black );
             if( myfGrid )
                 for( int k=5; k<graph.width(); k=k+10 )
                 {
-                    graph.set_pixel(k, y, colors::blue );
-                    graph.set_pixel(k+1, y, colors::blue );
+                    graph.set_pixel(k, y0_px, colors::blue );
+                    graph.set_pixel(k+1, y0_px, colors::blue );
                 }
         }
+        else
+        {
+            myLabelZero.hide();
+            int yinc = ( ymn_px - ymx_px ) / 4;
+            for( int ky = 0; ky < 4; ky++ )
+            {
+                int y = ymx_px + ky * yinc;
+                graph.line( point(2, y),
+                            point(5, y),
+                            colors::black );
+                if( myfGrid )
+                    for( int k=5; k<graph.width(); k=k+10 )
+                    {
+                        graph.set_pixel(k, y, colors::blue );
+                        graph.set_pixel(k+1, y, colors::blue );
+                    }
+            }
+        }
+    }
+    else
+    {
+        // x-axis
+        int ypos = graph.height() - 15;
+
+        double mn = 10 * ( myPlot->minX() / 10 );
+        double mx = 10 * ( myPlot->maxX() / 10 );
+        if( mx-mn < 2 )
+        {
+            mn = myPlot->minX();
+            mx = myPlot->maxX();
+        }
+        int xmn_px = myPlot->X2Pixel( mn );
+        myLabelMin.caption(std::to_string(mn));
+        myLabelMin.move( xmn_px, ypos+3 );
+
+        int xmx_px = myPlot->X2Pixel( mx );
+        myLabelMax.caption(std::to_string( mx ));
+        myLabelMax.move( xmx_px - 15, ypos+ 3 );
+
+        graph.line( point( xmn_px, ypos ),
+                    point( xmx_px, ypos ),
+                    colors::black );
     }
 }
 
