@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <iostream>
 #include <nana/gui.hpp>
@@ -74,6 +75,14 @@ public:
             panel<false>::move(
                 -myScrollHoriz.value(),
                 -myScrollVert.value() );
+        });
+        myScrollHoriz.events().click([&](const arg_click& arg)
+        {
+             myScrollHoriz.value( (int)(((float)arg.mouse_args->pos.x / myVisible.size().width) * myScrollHoriz.amount()) );
+        });
+        myScrollVert.events().click([&](const arg_click& arg)
+        {
+            myScrollVert.value( (int)(((float)arg.mouse_args->pos.y / myVisible.size().height) * myScrollVert.amount()) );
         });
 
         // arrange visible panel with scrolls at right and bottom
