@@ -78,11 +78,15 @@ public:
         });
         myScrollHoriz.events().click([&](const arg_click& arg)
         {
-             myScrollHoriz.value( (int)(((float)arg.mouse_args->pos.x / myVisible.size().width) * myScrollHoriz.amount()) );
+            float thumb = ((float) myScrollHoriz.value() ) /  myScrollHoriz.amount();
+            float mouse = ((float) arg.mouse_args->pos.x ) / myVisible.size().width ;
+            myScrollHoriz.make_step( thumb < mouse );
         });
         myScrollVert.events().click([&](const arg_click& arg)
         {
-            myScrollVert.value( (int)(((float)arg.mouse_args->pos.y / myVisible.size().height) * myScrollVert.amount()) );
+            float thumb = ((float) myScrollVert.value() ) /  myScrollVert.amount();
+            float mouse = ((float) arg.mouse_args->pos.y ) / myVisible.size().height ;
+            myScrollVert.make_step( thumb < mouse );
         });
 
         // arrange visible panel with scrolls at right and bottom
@@ -121,6 +125,8 @@ private:
             y = 0;
         myScrollHoriz.amount( x );
         myScrollVert.amount( y );
+        myScrollHoriz.step( x / 10 );
+        myScrollVert.step( y / 10 );
     }
 };
 }
