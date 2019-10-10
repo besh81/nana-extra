@@ -9,9 +9,7 @@ int main()
 {
     using namespace nana;
 
-
-
-    form fm( 0, nana::size{ 400, 600 } );
+    form fm( 0, nana::size{ 400, 400 } );
 
     nana::paint::font fnew( "Segoe UI", 18 );
     fnew.set_default();
@@ -62,6 +60,10 @@ int main()
         msgbox m("test1 popup menu extra");
         m.show();
     });
+
+    nana::label lbtest( fm );
+    lbtest.move( {10, 650, 60,30});
+    lbtest.caption("test");
 
 
     //Expose the form.

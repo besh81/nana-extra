@@ -65,6 +65,7 @@ cProp::cProp( cPropGrid& grid,
     : myGrid( grid )
     , myPanel( new nana::panel<true>(  myGrid.parent() ) )
     , myLabel( new nana::label( *myPanel ))
+    , myTextbox( 0 )
     , myCheckbox( new nana::checkbox( *myPanel ))
     , myName( name )
     , myIndex( myGrid.size() )
@@ -101,6 +102,7 @@ cProp::cProp(
     : myGrid( grid )
     , myPanel( new nana::panel<true>(  myGrid.parent() ) )
     , myLabel( new nana::label( *myPanel ))
+    , myTextbox( 0 )
     , myCombox( new nana::combox( * myPanel ))
     , myName( name )
     , myIndex( myGrid.size() )
@@ -175,7 +177,8 @@ void cProp::PanelLabel()
     myLabel->events().mouse_down([this](const arg_mouse& arg)
     {
         if ( arg.right_button )
-            myMenu.popup_await(myGrid.parent(), arg.pos.x, arg.pos.y);
+            myMenu.popup_await(
+                *myPanel,5,5);
     });
 
     // draw box around property
@@ -223,6 +226,10 @@ void cProp::tooltip( const std::string& msg )
     myLabel->tooltip( msg );
     switch( myType )
     {
+    case eType::category:
+        myPanel->tooltip( msg );
+        break;
+
     case eType::string:
         myTextbox->tooltip( msg );
         break;
@@ -378,13 +385,14 @@ cProp* cPropGrid::check( const std::string& name,
     return myProp.back();
 }
 
-void cPropGrid::category( const std::string& name )
+cProp* cPropGrid::category( const std::string& name )
 {
     myProp.emplace_back( new cProp(
                              *this,
                              name ) );
     myCurCatName = name;
     visible();
+    return myProp.back();
 }
 
 cProp* cPropGrid::choice(

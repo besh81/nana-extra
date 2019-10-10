@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <iostream>
 #include <nana/gui.hpp>
@@ -75,6 +76,18 @@ public:
                 -myScrollHoriz.value(),
                 -myScrollVert.value() );
         });
+        myScrollHoriz.events().click([&](const arg_click& arg)
+        {
+            float thumb = ((float) myScrollHoriz.value() ) /  myScrollHoriz.amount();
+            float mouse = ((float) arg.mouse_args->pos.x ) / myVisible.size().width ;
+            myScrollHoriz.make_step( thumb < mouse );
+        });
+        myScrollVert.events().click([&](const arg_click& arg)
+        {
+            float thumb = ((float) myScrollVert.value() ) /  myScrollVert.amount();
+            float mouse = ((float) arg.mouse_args->pos.y ) / myVisible.size().height ;
+            myScrollVert.make_step( thumb < mouse );
+        });
 
         // arrange visible panel with scrolls at right and bottom
         myPlace.div("<vert <<panel><scroll_vert weight=16>> <scroll_horiz weight=16>>");
@@ -112,6 +125,8 @@ private:
             y = 0;
         myScrollHoriz.amount( x );
         myScrollVert.amount( y );
+        myScrollHoriz.step( x / 10 );
+        myScrollVert.step( y / 10 );
     }
 };
 }
@@ -316,7 +331,7 @@ public:
     /** \brief Add category
         \param[in] name
     */
-    void category(
+    cProp* category(
         const std::string& name );
 
     /** \brief Add choice property
