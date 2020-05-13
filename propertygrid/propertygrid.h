@@ -87,7 +87,6 @@ namespace nana
 
 				pgitem(const std::string& label, const std::string& value = "")	///< Constructor
 					: label_(label), value_(value), def_(value)
-					, ibox_show_( true )
 				{}
 
 				void init(window wd);							///< Initialize the inline controls (should not be used)
@@ -143,22 +142,9 @@ namespace nana
 					return size_;
 				}
 
-				virtual void tooltip( const std::string& help_text )
+				virtual void tooltip(const std::string& help_text)
 				{
-				    // nothing to be done for the base class
-				}
-
-				virtual void set( const std::vector< std::string >& vs )
-				{
-				    // nothing to be done for the base class
-				}
-
-				/** \brief Show or Hide the "interactive box"
-                    @param[in] f true if you want to see the interactive box
-                */
-				void iboxShow( bool f )
-				{
-				    ibox_show_ = f;
+					// nothing to be done for the base class
 				}
 
 				virtual void typeface_changed(unsigned text_height)	///< Inform the item the font is changed (should not be used)
@@ -166,7 +152,7 @@ namespace nana
 					size_ = text_height + 10;
 				}
 
-				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the item. Position and size of inline widgets should be set here
+				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned valuew, unsigned iboxw, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the item. Position and size of inline widgets should be set here
 
 				void update();		///< Update the item (refresh)
 				void scroll();		///< Scrolls the view to show this item
@@ -197,7 +183,6 @@ namespace nana
 				essence_t*		ess_;
 				index_pair		idx_;
 
-				bool                        ibox_show_;
 				mutable nana::panel<true>	ibox_;
 				mutable nana::menu			menu_;
 			};
@@ -260,9 +245,9 @@ namespace nana
 				std::string defvalue() const;					///< Gets item's default value
 
 				bool enabled();				///< Get the enables state of the item
-				void enabled(bool state);	///< Enables/disables the item
+				item_proxy& enabled(bool state);	///< Enables/disables the item
 
-                /** \brief Provide help in pop-up when mouse hovers over property's value entry field
+				/** \brief Provide help in pop-up when mouse hovers over property's value entry field
 
                 @param[in] help_text
 
@@ -272,25 +257,8 @@ namespace nana
                     auto cat = pg.append("A category");
                     cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))->tooltip( "A helpful hint" );
                 </pre>
-                */
-                item_proxy& tooltip( const std::string& help_text );
-
-                /** \brief Set a vector of strings in the item
-
-                @param[in] vs vector of stings to set in item
-
-                This is used by the choice property to set the available options in the drop down.
-                Other property types just ignore it.
-
-                Example Usage:
-
-                <pre>
-                    auto cat = pg.append("A category");
-                    auto ip  = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))
-                    ip->set({ "A", "B", "C", "D" });
-                </pre>
-                */
-                item_proxy& set( const std::vector< std::string >& vs );
+				*/
+				item_proxy& tooltip(const std::string& help_text);
 
 				// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;
@@ -427,6 +395,15 @@ namespace nana
 		unsigned values_min_width() const;					///< Gets the value column min width
 		propertygrid& values_min_width(unsigned pixels);	///< Sets the value column min width
 
+		/** \brief Show or hide the interactive box
+		\param[in] state true if you want the interactive boxes to show, this is the default.
+		\param[in] state false to hide the boxes
+
+		The interactive box appear on the left of each property in the grid and provide a pop-up menu for the property.
+		*/
+		void ibox_show(bool state);
+		bool ibox_show() const;
+
 		void auto_draw(bool);										///< Enables/disables automatic drawing
 
 		void scroll(const index_pair& pos, bool as_first = false);	///< Scrolls the view to the selected item
@@ -445,8 +422,8 @@ namespace nana
             \throw runtime_error if property does not exist
         */
 		item_proxy find(
-		           const std::string& catName,
-                   const std::string& propName ) const;
+					const std::string& catName,
+					const std::string& propName ) const;
 
 		void clear(std::size_t cat);					///< Removes all the items from the specified category
 		void clear();									///< Removes all the items from all categories
@@ -457,33 +434,11 @@ namespace nana
 		std::size_t size_categ() const;					///< Get the number of categories
 		std::size_t size_item(std::size_t cat) const;	///< Get the number of items in the specified category
 
-		/** \brief Show or hide the interactive boxes
-            \param[in] f true if you want the interactive boxes to show, this is the default.
-            \param[in] f false to hide the boxes
-
-            The interactive boxes are the small boxes that appear on the left of each property in the grid
-
-            They are supposed to provide a pop-up menu for the property,
-            similar to what nornally happens if you right click on something.
-
-            Unfortunately, they are undocumented ( except for this discussion )
-            and introduce a lot of visual clutter compared to the normal pop-up menu on right click
-
-            Call this with f = false before any properties are added to the grid
-            and the boxes will not appear.
-
-        */
-		void iBoxShow( bool f )
-		{
-		    ibox_show_ = f;
-		}
 
 	private:
 		drawerbase::propertygrid::essence_t & _m_ess() const;
 
 		bool	_en{ true };
-
-		bool ibox_show_;            ///< if true, a small box will appear on the right of every property added to the grid
 	};
 }//end namespace nana
 

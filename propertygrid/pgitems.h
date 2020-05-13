@@ -21,22 +21,10 @@
 
 namespace nana
 {
-	// color helper functions
-	nana::color to_color(const std::string& s);		///< Returns nana::color from the given propertygrid color string
-	bool is_color_inherited(const std::string& s);	///< Returns the inherited value (true/false) from the given propertygrid color string
-
-	nana::color to_color(const std::string& s, bool& inherited);	///< Combination of previous functions
-
-	nana::color to_color(const std::string& r, const std::string& g, const std::string& b);	///< Returns nana::color from the given R,G,B string
-
-	std::string to_string(const nana::color& c, bool inherited = false);	///< Returns propertygrid color string from the given nana::color and inherited state
-
-
-
-	/// class pg_string
 	using pgitem = drawerbase::propertygrid::pgitem;
 
 
+	/// class pg_string
 	class pg_string
 		: public pgitem
 	{
@@ -56,7 +44,7 @@ namespace nana
 		virtual void editable(bool editable);
 		virtual bool editable();
 
-        virtual void tooltip( const std::string& help_text );   ///< Provide pop-up help string
+		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
 
 	protected:
 		virtual void create(window wd) override;
@@ -84,6 +72,8 @@ namespace nana
 		virtual void range(int min, int max);
 
 	protected:
+		bool validate_user_input(int & value);
+
 		virtual void create(window wd) override;
 
 		bool	range_{ false };
@@ -109,6 +99,8 @@ namespace nana
 		virtual void range(unsigned min, unsigned max);
 
 	protected:
+		bool validate_user_input(unsigned & value);
+
 		virtual void create(window wd) override;
 
 		bool		range_{ false };
@@ -138,7 +130,7 @@ namespace nana
 		virtual void editable(bool editable);
 		virtual bool editable() const;
 
-		virtual void tooltip( const std::string& help_text );   ///< Provide pop-up help string
+		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
 
 	protected:
 		virtual void create(window wd) override;
@@ -170,10 +162,9 @@ namespace nana
 		virtual std::size_t option() const;
 
 		virtual void push_back(const std::string& option);
+		virtual void set(const std::vector<std::string>& vs);	///< Set options to be chosen from
 
-		virtual void tooltip( const std::string& help_text );      ///< Provide pop-up help string
-
-		virtual void set( const std::vector< std::string >& vs ); ///< set options to be chosen from
+		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
 
 	protected:
 		virtual void create(window wd) override;
@@ -207,7 +198,8 @@ namespace nana
 		{
 			return pgitem::value() == "true" ? true : false;
 		}
-        virtual void tooltip( const std::string& help_text );   ///< Provide pop-up help string
+
+	virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
 
 	protected:
 		virtual void create(window wd) override;
@@ -225,8 +217,8 @@ namespace nana
 	public:
 		pg_color() = default;
 
-		pg_color(const std::string& label, const std::string& value, bool showinherited = false)
-			: pgitem(label, value), show_inherited_(showinherited)
+		pg_color(const std::string& label, const std::string& value)
+			: pgitem(label, value)
 		{}
 
 		virtual void value(const std::string& value) override;
@@ -239,13 +231,10 @@ namespace nana
 			return color_;
 		}
 
-		virtual void inherited(bool value);
-		virtual bool inherited() const
+		virtual unsigned size() const override
 		{
-			return inherited_;
+			return expand_ ? 2 * size_ : size_;
 		}
-
-		virtual unsigned size() const override;
 
 	protected:
 		virtual void create(window wd) override;
@@ -255,10 +244,8 @@ namespace nana
 		mutable nana::textbox	colorbox_;
 		mutable nana::textbox	rgb_[3];
 		bool		expand_{ false };
-		bool		show_inherited_{ false };
 
 		nana::color	color_;
-		bool		inherited_{ false };
 	};
 
 }//end namespace nana

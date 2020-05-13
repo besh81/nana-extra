@@ -10,8 +10,6 @@
 #include "pgitems.h"
 
 
-#define	INHERITED_COLOR		"[inherited]"
-
 
 namespace nana
 {
@@ -32,66 +30,6 @@ namespace nana
 	private:
 		bool* flag_;
 	};
-
-
-
-	// color helper functions
-	nana::color to_color(const std::string& s)
-	{
-		bool inherited;
-		return to_color(s, inherited);
-	}
-
-	bool is_color_inherited(const std::string& s)
-	{
-		return s.find(INHERITED_COLOR) == 0 ? true : false;
-	}
-
-	nana::color to_color(const std::string& s, bool& inherited)
-	{
-		std::stringstream ss(s);
-		std::string item;
-		std::vector<int> items;
-
-		inherited = false;
-
-		try
-		{
-			while(getline(ss, item, ','))
-			{
-				if(item == INHERITED_COLOR)
-					inherited = true;
-				else
-					items.push_back(item.empty() ? 0 : std::stoi(item));
-			}
-		}
-		catch(...)
-		{
-			// reset
-			items.clear();
-		}
-		for(size_t i = 0; i < 3; ++i)
-		{
-			if(i >= items.size())
-				items.push_back(0);
-			else
-				items[i] = std::max(0, std::min(items[i], 255));
-		}
-
-		return nana::color(items[0], items[1], items[2]);
-	}
-
-	nana::color to_color(const std::string& r, const std::string& g, const std::string& b)
-	{
-		bool inherited;
-		return to_color(r + "," + g + "," + b, inherited);
-	}
-
-	std::string to_string(const nana::color& c, bool inherited)
-	{
-		return (inherited ? INHERITED_COLOR "," : "") + std::to_string(int(c.r())) + "," + std::to_string(int(c.g())) + "," + std::to_string(int(c.b()));
-	}
-
 
 
 	/// class pg_string
@@ -122,10 +60,11 @@ namespace nana
 	{
 		return txt_.editable();
 	}
-    void pg_string::tooltip( const std::string& help_text )
-    {
-        txt_.tooltip( help_text );
-    }
+	
+	void pg_string::tooltip(const std::string& help_text)
+	{
+		txt_.tooltip(help_text);
+	}
 
 	void pg_string::create(window wd)
 	{
@@ -151,16 +90,16 @@ namespace nana
 		});
 		txt_.events().focus([this](const nana::arg_focus& arg)
 		{
-		        if( !arg.getting )
-		        {
-		            // just lost focus, so capture the value left by the user, if changed
-		            if( txt_.caption() != pgitem::value() )
-		            {
-		                pgitem::value( txt_.caption() );
-		                emit_event();
-		            }
-		        }
-    	});
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value())
+				{
+					pgitem::value(txt_.caption());
+					emit_event();
+				}
+			}
+		});
 	}
 
 	void pg_string::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -204,6 +143,24 @@ namespace nana
 		value(std::clamp(to_int(), min_, max_));
 	}
 
+	bool pg_string_int::validate_user_input(int & value)
+	{
+		int int_val = -1;
+		try
+		{
+			int_val = std::stoi(txt_.caption());
+			if(range_)
+				int_val = std::clamp(int_val, min_, max_);
+		}
+		catch(...)
+		{
+			return false;
+		}
+
+		value = int_val;
+		return true;
+	}
+
 	void pg_string_int::create(window wd)
 	{
 		pg_string::create(wd);
@@ -213,38 +170,43 @@ namespace nana
 			if(arg.key == nana::keyboard::enter)
 			{
 				int int_val = -1;
-				try
+				if(validate_user_input(int_val))
 				{
-					int_val = std::stoi(txt_.caption());
-					if(range_)
-						int_val = std::clamp(int_val, min_, max_);
+					value(int_val);
+					emit_event();
 				}
-				catch(...)
+				else
 				{
+					// restore value
 					txt_.caption(value_);
-					arg.stop_propagation();
-					return;
 				}
 
-				pg_string::value(std::to_string(int_val));
-
-				emit_event();
 				arg.stop_propagation();
 			}
 		});
-
-		txt_.events().focus([this](const nana::arg_focus& arg)
+		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
 		{
-		        if( !arg.getting )
-		        {
-		            // just lost focus, so capture the value left by the user, if changed
-		            if( txt_.caption() != pgitem::value() )
-		            {
-		                pgitem::value( txt_.caption() );
-		                emit_event();
-		            }
-		        }
-   		 });
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value())
+				{
+					int int_val = -1;
+					if(validate_user_input(int_val))
+					{
+						value(int_val);
+						emit_event();
+					}
+					else
+					{
+						// restore value
+						txt_.caption(value_);
+					}
+
+					arg.stop_propagation();
+				}
+			}
+		});
 
 		txt_.set_accept([](wchar_t c) -> bool
 		{
@@ -287,6 +249,24 @@ namespace nana
 		value(std::clamp(to_uint(), min_, max_));
 	}
 
+	bool pg_string_uint::validate_user_input(unsigned & value)
+	{
+		unsigned u_val = -1;
+		try
+		{
+			u_val = std::stoul(txt_.caption());
+			if(range_)
+				u_val = std::clamp(u_val, min_, max_);
+		}
+		catch(...)
+		{
+			return false;
+		}
+
+		value = u_val;
+		return true;
+	}
+
 	void pg_string_uint::create(window wd)
 	{
 		pg_string::create(wd);
@@ -296,23 +276,41 @@ namespace nana
 			if(arg.key == nana::keyboard::enter)
 			{
 				unsigned u_val = -1;
-				try
+				if(validate_user_input(u_val))
 				{
-					u_val = std::stoul(txt_.caption());
-					if(range_)
-						u_val = std::clamp(u_val, min_, max_);
+					value(u_val);
+					emit_event();
 				}
-				catch(...)
+				else
 				{
+					// restore value
 					txt_.caption(value_);
-					arg.stop_propagation();
-					return;
 				}
 
-				pg_string::value(std::to_string(u_val));
-
-				emit_event();
 				arg.stop_propagation();
+			}
+		});
+		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+		{
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value())
+				{
+					unsigned u_val = -1;
+					if(validate_user_input(u_val))
+					{
+						value(u_val);
+						emit_event();
+					}
+					else
+					{
+						// restore value
+						txt_.caption(value_);
+					}
+
+					arg.stop_propagation();
+				}
 			}
 		});
 
@@ -360,10 +358,11 @@ namespace nana
 	{
 		return txt_.editable();
 	}
-    void pg_string_button::tooltip( const std::string& help_text )
-    {
-        txt_.tooltip( help_text );
-    }
+	
+	void pg_string_button::tooltip(const std::string& help_text)
+	{
+		txt_.tooltip(help_text);
+	}
 
 	void pg_string_button::create(window wd)
 	{
@@ -390,6 +389,18 @@ namespace nana
 			{
 				pgitem::value(txt_.caption());
 				emit_event();
+			}
+		});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value() && txt_.editable())
+				{
+					pgitem::value(txt_.caption());
+					emit_event();
+				}
 			}
 		});
 
@@ -423,15 +434,15 @@ namespace nana
         value( "0" );    /// make first option selected
 
 	*/
-	void pg_choice::value(const std::string& new_option_index )
+	void pg_choice::value(const std::string& new_option_index)
 	{
 		try
 		{
-			option(std::stoul( new_option_index ) );
+			option(std::stoul(new_option_index));
 		}
 		catch(...)
 		{
-		    // ignore out of range option index
+			// ignore out of range option index
 		}
 	}
 
@@ -468,18 +479,28 @@ namespace nana
 		cmb_.push_back(option);
 	}
 
-    void pg_choice::tooltip( const std::string& help_text )
-    {
-        cmb_.tooltip( help_text );
-    }
+	/** \brief Set a vector of strings in the item
 
-    void pg_choice::set( const std::vector< std::string >& vs )
-    {
-        for( auto& s : vs )
-        {
-            cmb_.push_back( s );
-        }
-    }
+	@param[in] vs vector of stings to set in item
+
+	Example Usage:
+
+	<pre>
+		auto cat = pg.append("A category");
+		auto ip  = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))
+		ip->set({ "A", "B", "C", "D" });
+	</pre>
+	*/
+	void pg_choice::set(const std::vector<std::string>& vs)
+	{
+		for(auto& s : vs)
+			cmb_.push_back(s);
+	}
+
+	void pg_choice::tooltip(const std::string& help_text)
+	{
+		cmb_.tooltip(help_text);
+	}
 
 	void pg_choice::create(window wd)
 	{
@@ -528,10 +549,11 @@ namespace nana
 		pgitem::enabled(state);
 		chk_.enabled(en_);
 	}
-    void pg_check::tooltip( const std::string& help_text )
-    {
-        chk_.tooltip( help_text );
-    }
+
+	void pg_check::tooltip( const std::string& help_text )
+	{
+	    chk_.tooltip( help_text );
+	}
 
 	void pg_check::create(window wd)
 	{
@@ -566,23 +588,32 @@ namespace nana
 	/// class pg_color
 	void pg_color::value(const std::string& value)
 	{
-		internal_lock_guard evt_lock(&evt_emit_, false);
+		std::stringstream ss(value);
+		std::string item;
+		std::vector<int> items;
 
-		color_ = nana::to_color(value);
-		rgb_[0].caption(std::to_string(static_cast<int>(color_.r())));
-		rgb_[1].caption(std::to_string(static_cast<int>(color_.g())));
-		rgb_[2].caption(std::to_string(static_cast<int>(color_.b())));
-
-		if(show_inherited_)
+		try
 		{
-			inherited_ = is_color_inherited(value);
-			menu_.checked(2, inherited_);
-
-			for(auto & i : rgb_)
-				i.enabled(en_ && !inherited_);
+			while(getline(ss, item, ','))
+				items.push_back(item.empty() ? 0 : std::clamp(std::stoi(item), 0, 255));
+		}
+		catch(...)
+		{
+			// reset
+			items.clear();
 		}
 
-		pgitem::value(nana::to_string(color_, show_inherited_ ? inherited_ : false));
+		for(size_t i = items.size(); i < 3; ++i)
+			items.push_back(0);
+
+
+		internal_lock_guard evt_lock(&evt_emit_, false);
+
+		for(size_t i = 0; i < 3; ++i)
+			rgb_[i].caption(std::to_string(items[i]));
+
+		color_ = nana::color(items[0], items[1], items[2]);
+		pgitem::value(std::to_string(items[0]) + "," + std::to_string(items[1]) + "," + std::to_string(items[2]));
 	}
 
 	void pg_color::enabled(bool state)
@@ -590,40 +621,16 @@ namespace nana
 		pgitem::enabled(state);
 
 		for(auto & i : rgb_)
-			i.enabled(en_ && !inherited_);
+			i.enabled(en_);
 	}
 
 	void pg_color::value(::nana::color value)
 	{
-		pg_color::value(nana::to_string(value, show_inherited_ ? inherited_ : false));
-	}
-
-	void pg_color::inherited(bool value)
-	{
-		if(show_inherited_)
-			pg_color::value(nana::to_string(color_, value));
-	}
-
-	unsigned pg_color::size() const
-	{
-		return expand_ ? 2 * size_ : size_;
+		pg_color::value(std::to_string(int(value.r())) + "," + std::to_string(int(value.g())) + "," + std::to_string(int(value.b())));
 	}
 
 	void pg_color::create(window wd)
 	{
-		// ibox context menu
-		menu_.append_splitter();
-		// 2. Inherited
-		menu_.append("Inherited", [this](const nana::menu::item_proxy& ip)
-		{
-			pg_color::value(nana::to_string(color_, ip.checked()));
-			printf(ip.checked() ? "[X]\n" : "[ ]\n");
-			emit_event();
-		});
-		menu_.enabled(2, show_inherited_);
-		menu_.check_style(2, nana::menu::checks::highlight);
-
-
 		// colorbox
 		colorbox_.create(wd);
 		colorbox_.editable(false);
@@ -647,6 +654,7 @@ namespace nana
 		{
 			i.create(wd);
 			i.multi_lines(false);
+			i.focus_behavior(nana::textbox::text_focus_behavior::select_if_tabstop_or_click);
 
 			i.events().click.connect_front([this](const nana::arg_click& arg)
 			{
@@ -660,13 +668,22 @@ namespace nana
 			{
 				if(arg.key == nana::keyboard::enter)
 				{
-					pg_color::value(nana::to_string(nana::to_color(rgb_[0].caption(), rgb_[1].caption(), rgb_[2].caption()), show_inherited_ ? inherited_ : false));
+					pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
+					emit_event();
+				}
+			});
+			i.events().focus([this, &i](const nana::arg_focus& arg)
+			{
+				if(!arg.getting)
+				{
+					// just lost focus, so capture the value left by the user
+					pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
 					emit_event();
 				}
 			});
 			i.set_accept([](wchar_t c) -> bool
 			{
-				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace || c == nana::keyboard::tab) ? true : false;
 			});
 		}
 
